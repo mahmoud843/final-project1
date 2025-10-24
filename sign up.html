@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="sign up.css">
+</head>
+<body>
+
+    <form id="registrationForm">
+        <h2>Sign Up</h2>
+        <div>
+            <label for="regUsername">Username</label>
+            <input type="text" id="regUsername" required placeholder="Enter your username">
+        </div>
+        <div>
+            <label for="regEmail">Email or Phone</label>
+            <input type="email" id="regEmail" required placeholder="Enter your email or phone number">
+        </div>
+        <div>
+            <label for="regPassword">Password</label>
+            <input type="password" id="regPassword" required>
+        </div>
+        <div>
+            <label for="regConfirmPassword">Confirm Password</label>
+            <input type="password" id="regConfirmPassword" required>
+        </div>
+        <div class="row">
+            <div class="column-1">
+                <p class="gender">Gender:</p>
+                <div class="male-input">
+                    <input type="radio" id="male" name="gender" value="male" required>
+                    <label class="label-male" for="male">Male</label>
+                </div>
+                <div class="female-input">
+                    <input type="radio" id="female" name="gender" value="female">
+                    <label for="female">Female</label>
+                </div>
+            </div>
+            <div class="column-2">
+                <p>How much do you know about programming?</p>
+                <div class="beginner">
+                    <input type="radio" id="beginner" name="programming" value="beginner" required>
+                    <label for="beginner">Beginner</label>
+                </div>
+                <div class="professional">
+                    <input type="radio" id="professional" name="programming" value="professional">
+                    <label for="professional">Professional</label>
+                </div>
+            </div>
+        </div>
+        <button type="submit" onclick="SignupUser(event)">Sign Up</button>
+    
+        <div class="message" id="message">
+        <div class="login-message">
+            <p>Already have an account? <a href="login.html" id="login">log in</a></p>  
+        </div>
+    </div>
+    </form>
+    
+    <script src="sign up.js"></script>
+    </body>
+    </html>
