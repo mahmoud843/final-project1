@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>أبو الشات المحلي</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 15px; 
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.5;
+    }
+    
+    .chat-box { 
+      background: #fff; 
+      border-radius: 20px; 
+      padding: 20px; 
+      max-width: 500px; 
+      width: 100%;
+      margin: auto; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      height: 90vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 15px;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+    
+    .status {
+      text-align: center;
+      background: #d4edda;
+      color: #155724;
+      padding: 8px 12px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+    
+    .messages { 
+      flex: 1;
+      overflow-y: auto; 
+      margin-bottom: 15px; 
+      border: 1px solid #e0e0e0; 
+      padding: 12px; 
+      border-radius: 15px;
+      background: #f9f9f9;
+    }
+    
+    .user, .bot { 
+      margin: 10px 0; 
+      padding: 10px 14px; 
+      border-radius: 18px; 
+      max-width: 85%;
+      word-wrap: break-word;
+      line-height: 1.4;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      animation: fadeIn 0.3s ease-in;
+      font-size: 0.95rem;
+    }
+    
+    .user { 
+      background: #007bff; 
+      color: white;
+      text-align: right; 
+      margin-left: auto;
+      border-bottom-right-radius: 5px;
+    }
+    
+    .bot { 
+      background: #e9ecef; 
+      color: #333;
+      text-align: left; 
+      border-bottom-left-radius: 5px;
+    }
+    
+    .input-container {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    
+    input { 
+      padding: 12px 15px; 
+      flex: 1;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      font-size: 16px;
+      outline: none;
+      transition: border 0.3s;
+      min-height: 50px;
+    }
+    
+    input:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+    }
+    
+    button { 
+      padding: 12px 18px; 
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s;
+      min-height: 50px;
+      min-width: 70px;
+    }
+    
+    button:hover {
+      background: #0056b3;
+      transform: translateY(-2px);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    button:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .loading {
+      opacity: 0.7;
+      font-style: italic;
+      color: #666;
+    }
+    
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 10px;
+      border-radius: 10px;
+      margin: 8px 0;
+      border: 1px solid #f5c6cb;
+      font-size: 0.9rem;
+    }
+    
+    .typing-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+    
+    .typing-dot {
+      width: 6px;
+      height: 6px;
+      background: #666;
+      border-radius: 50%;
+      animation: typing 1.4s infinite ease-in-out;
+    }
+    
+    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes typing {
+      0%, 60%, 100% { transform: scale(0.8); opacity: 0.5; }
+      30% { transform: scale(1); opacity: 1; }
+    }
+    
+    /* تخصيص شريط التمرير */
+    .messages::-webkit-scrollbar {
+      width: 4px;
+    }
+    
+    .messages::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+    
+    .messages::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 10px;
+    }
+    
+    .messages::-webkit-scrollbar-thumb:hover {
+      background: #a8a8a8;
+    }
+    
+    /* ========== MEDIA QUERIES للهواتف ========== */
+    
+    @media (max-width: 400px) {
+      body { padding: 10px; }
+      .chat-box { padding: 15px; border-radius: 15px; height: 95vh; }
+      h2 { font-size: 1.2rem; margin-bottom: 10px; }
+      .status { font-size: 0.8rem; padding: 6px 10px; margin-bottom: 10px; }
+      .messages { padding: 10px; margin-bottom: 12px; }
+      .user, .bot { max-width: 92%; padding: 8px 12px; font-size: 0.9rem; margin: 8px 0; }
+      input { padding: 10px 12px; font-size: 15px; min-height: 45px; }
+      button { padding: 10px 15px; font-size: 15px; min-height: 45px; min-width: 60px; }
+      .typing-dot { width: 5px; height: 5px; }
+    }
+    
+    @media (min-width: 401px) and (max-width: 480px) {
+      body { padding: 12px; }
+      .chat-box { padding: 18px; height: 92vh; }
+      h2 { font-size: 1.3rem; }
+      .user, .bot { max-width: 88%; font-size: 0.92rem; }
+      input { min-height: 48px; }
+      button { min-height: 48px; }
+    }
+    
+    @media (min-width: 481px) and (max-width: 768px) {
+      .chat-box { max-width: 450px; height: 85vh; }
+      h2 { font-size: 1.35rem; }
+      .user, .bot { max-width: 82%; }
+    }
+    
+    @media (max-height: 500px) and (orientation: landscape) {
+      body { padding: 8px; }
+      .chat-box { height: 96vh; padding: 12px; }
+      h2 { font-size: 1.1rem; margin-bottom: 8px; }
+      .status { font-size: 0.75rem; padding: 4px 8px; margin-bottom: 8px; }
+      .messages { height: 65vh; margin-bottom: 8px; padding: 8px; }
+      .user, .bot { padding: 6px 10px; font-size: 0.85rem; margin: 6px 0; max-width: 90%; }
+      .input-container { gap: 6px; }
+      input { padding: 8px 10px; min-height: 40px; font-size: 14px; }
+      button { padding: 8px 12px; min-height: 40px; min-width: 55px; font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-box">
+    <h2>💬 الدردشة مع أبو الشات المحلي</h2>
+    
+    <div class="messages" id="chat"></div>
+    <div class="input-container">
+      <input type="text" id="message" placeholder="اكتب رسالتك هنا..." onkeypress="handleKeyPress(event)" />
+      <button id="sendBtn" onclick="sendMessage()">إرسال</button>
+    </div>
+  </div>
+
+  <script>
+    const knowledgeBase = {
+      greetings: [
+        "أهلاً وسهلاً بك! 😊 اساعدك ازاي انهرده ؟",
+        "مرحباً ! أنا أبو الشات 🤖 سعيد بلقائك!",
+        "أهلاً بك! عامل اي انهرده؟"
+      ],
+      farewells: [
+        "مع السلامة! 🙋‍♂️ كان جميل التحدث معك",
+        "إلى اللقاء! لا تتردد في العودة لأي سؤال",
+        "وداعاً! أتمنى لك يوماً رائعاً 🌟"
+      ],
+      thanks: [
+        "العفو! 😊 سعيد لأنني استطعت مساعدتك",
+        "لا شكر على واجب! أنا هنا لخدمتك دائماً",
+        "شكراً لك على كلماتك اللطيفة! 🤗"
+      ],
+      programming: [
+        "أحب البرمجة! 💻 يمكنني مساعدتك في HTML, CSS, JavaScript, Python وغيرها",
+        "البرمجة عالم رائع! أي لغة تريد التعلم عنها؟",
+        "لحل مشكلة برمجية، حاول تقسيمها لأجزاء صغيرة وتصحيح كل جزء على حدة"
+      ],
+      advice: [
+        "نصيحتي لك: تعلم شيئاً جديداً كل يوم 🌱",
+        "لا تستسلم! كل المبرمجين الكبار مروا بفشل قبل نجاحهم",
+        "حافظ على التوازن بين العمل والراحة ⚖️"
+      ],
+      weather: [
+        "للأسف لا أستطيع الوصول لبيانات الطقس المباشرة حالياً",
+       
+      ],
+      time: [
+        `حالياً الوقت هو: ${new Date().toLocaleTimeString('ar-EG')}`,
+        `التاريخ اليوم: ${new Date().toLocaleDateString('ar-EG')}`
+      ],
+      jokes: [
+        "لماذا لا يثق المبرمجون بالطبيعة؟ لأن فيها الكثير من البق (Bugs)! 🐛",
+        "ما هو المبرمج المفضل لدى البحر؟ C (Sea)! 🌊",
+        "لماذا كان الكمبيوتر يغني تحت الدش؟ لأنه وجد أغنية (Song) جديدة! 🎵"
+      ]
+    };
+
+    const botPersonality = {
+      name: "أبو الشات",
+      traits: ["مفيد", "مرح", "داعم", "صادق"],
+      style: "ودود ومباشر مع لمسة من الفكاهة"
+    };
+
+    window.onload = function() {
+      addBotMessage("مرحباً! أنا أبو الشات المحلي من قام بصنعي هوا محمود عامر 🤖 جاهز للمساعدة ياعمر! كل الردود من جهازك مباشرة  ! 💯");
+    };
+
+    function handleKeyPress(event) {
+      if (event.key === 'Enter') {
+        sendMessage();
+      }
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById("message");
+      const sendBtn = document.getElementById("sendBtn");
+
+      const userMessage = input.value.trim();
+      
+      if (!userMessage) return;
+
+      addUserMessage(userMessage);
+      sendBtn.disabled = true;
+      input.value = "";
+      
+      const loadingMsg = addTypingIndicator();
+
+      await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 1200));
+
+      try {
+        const botReply = generateSmartResponse(userMessage);
+        loadingMsg.remove();
+        addBotMessage(botReply);
+      } catch (error) {
+        try { loadingMsg.remove(); } catch (e) {}
+        addErrorMessage(`عذراً، حدث خطأ: ${error.message}`);
+      } finally {
+        sendBtn.disabled = false;
+        input.focus();
+      }
+    }
+
+    function generateSmartResponse(userMessage) {
+      const message = userMessage.toLowerCase();
+      
+      if (message.includes('مرحبا') || message.includes('اهلا') || message.includes('السلام') || message.includes('hello') || message.includes('hi')) {
+        return getRandomResponse(knowledgeBase.greetings);
+      }
+      else if (message.includes('مع السلامة') || message.includes('وداع') || message.includes('باى') || message.includes('bye')) {
+        return getRandomResponse(knowledgeBase.farewells);
+      }
+      else if (message.includes('شكر') || message.includes('thank you') || message.includes('thanks') || message.includes('متشكر')) {
+        return getRandomResponse(knowledgeBase.thanks);
+      }
+      else if (message.includes('برمج') || message.includes('كود') || message.includes('code') || message.includes('html') || message.includes('css') || message.includes('جافا') || message.includes('python')) {
+        return getRandomResponse(knowledgeBase.programming);
+      }
+      else if (message.includes('نصيح') || message.includes('نصحة') || message.includes('advice') || message.includes('مساعدة')) {
+        return getRandomResponse(knowledgeBase.advice);
+      }
+      else if (message.includes('طقس') || message.includes('weather')) {
+        return getRandomResponse(knowledgeBase.weather);
+      }
+      else if (message.includes('وقت') || message.includes('الساعة') || message.includes('time') || message.includes('تاريخ')) {
+        return getRandomResponse(knowledgeBase.time);
+      }
+      else if (message.includes('نكت') || message.includes('ضحك') || message.includes(' joke') || message.includes('فكاه')) {
+        return getRandomResponse(knowledgeBase.jokes);
+      }
+      else if (message.includes('اسمك') || message.includes('من انت') || message.includes('who are you')) {
+        return `أنا ${botPersonality.name}! 🤖 ${botPersonality.traits.join(' و')} - ${botPersonality.style}`;
+      }
+      else if (message.includes('حب') || message.includes('حبيبة') || message.includes('عشق')) {
+        return "الحب أجمل شعور في الحياة! ❤️ لكن أنا مساعد ذكي، خبرتي في المشاعر محدودة 😅";
+      }
+      else if (message.includes('اكل') || message.includes('طعام') || message.includes('مطعم') || message.includes('food')) {
+        return "للأسف لا أستطيع تذوق الطعام، لكني أسمع أن البيتزا والكنافة رائعين! 🍕😋";
+      }
+      else {
+        const generalResponses = [
+          `هذا سؤال مثير للاهتمام! كـ${botPersonality.name}، أعتقد أن الموضوع يستحق البحث أكثر.`,
+          "ممم... دعني أفكر. بناءً على معرفتي المحدودة، هذا ما يمكنني قوله...",
+          "شكراً على سؤالك المميز! للأسف معلوماتي غير كافية في هذا المجال بالذات.",
+          "أفهم ما تقصده! هل تريد أن نناقش هذا الموضوع بشكل أوسع؟",
+          "هذا موضوع رائع! لو كان لدي إمكانية البحث في الإنترنت، كنت أحضر لك معلومات أدق.",
+          "كم أتمنى لو أستطيع مساعدتك بشكل أفضل! حالياً إجاباتي مبنية على معرفتي الأساسية."
+        ];
+        return getRandomResponse(generalResponses);
+      }
+    }
+
+    function getRandomResponse(responses) {
+      return responses[Math.floor(Math.random() * responses.length)];
+    }
+
+    function addTypingIndicator() {
+      const chat = document.getElementById("chat");
+      const messageDiv = document.createElement("div");
+      
+      messageDiv.className = "bot loading";
+      messageDiv.innerHTML = `
+        <div class="typing-indicator">
+          <span>جاري الكتابة</span>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+      `;
+      
+      chat.appendChild(messageDiv);
+      chat.scrollTop = chat.scrollHeight;
+      return messageDiv;
+    }
+
+    function addUserMessage(text) { return addMessage(text, "user"); }
+    function addBotMessage(text, className = "") { return addMessage(text, "bot", className); }
+    function addErrorMessage(text) { return addMessage(text, "error"); }
+
+    function addMessage(text, type, className = "") {
+      const chat = document.getElementById("chat");
+      const messageDiv = document.createElement("div");
+      messageDiv.className = `${type} ${className}`;
+      messageDiv.innerText = text;
+      chat.appendChild(messageDiv);
+      chat.scrollTop = chat.scrollHeight;
+      return messageDiv;
+    }
+  </script>
+</body>
+</html>
+
+
+
+
