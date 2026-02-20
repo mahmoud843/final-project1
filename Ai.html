@@ -4,8 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>أبو الشات المحلي</title>
-  <!-- إضافة Font Awesome للأيقونات -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <style>
     * {
       box-sizing: border-box;
@@ -47,35 +45,6 @@
       justify-content: space-between;
       gap: 8px;
       margin-bottom: 10px;
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .back-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: 1px solid rgba(148, 163, 184, 0.3);
-    }
-
-    .back-btn:hover {
-      background: rgba(255,255,255,0.2);
-      transform: scale(1.05);
-    }
-
-    .back-btn i {
-      color: white;
-      font-size: 18px;
     }
 
     .chat-title {
@@ -311,7 +280,6 @@
       .user, .bot { max-width: 95%; padding: 8px 10px; font-size: 0.9rem; margin: 7px 0; }
       .chat-title-text span:first-child { font-size: 0.9rem; }
       .chat-title-text span:last-child { font-size: 0.75rem; }
-      .back-btn { width: 35px; height: 35px; }
     }
     
     @media (min-width: 401px) and (max-width: 480px) {
@@ -337,20 +305,13 @@
   </style>
 </head>
 <body>
-
   <div class="chat-box">
     <div class="chat-header">
-      <div class="header-right">
-        <!-- زر الرجوع -->
-        <div class="back-btn" onclick="window.location.href='html.html'">
-          <i class="fa-solid fa-arrow-right"></i>
-        </div>
-        <div class="chat-title">
-          <div class="bot-avatar">🤖</div>
-          <div class="chat-title-text">
-            <span>أبو الشات المحلي</span>
-            <span>نسخة خفيفة تعمل من جهازك فقط</span>
-          </div>
+      <div class="chat-title">
+        <div class="bot-avatar">🤖</div>
+        <div class="chat-title-text">
+          <span>أبو الشات المحلي</span>
+          <span>نسخة خفيفة تعمل من جهازك فقط</span>
         </div>
       </div>
       <div class="status-pill">
@@ -468,6 +429,10 @@
 
     function generateSmartResponse(userMessage) {
       const message = userMessage.toLowerCase();
+      // إضافة حالة "سلام عليكم"
+  if (message.includes('سلام عليكم')) {
+    return "وعليكم السلام ورحمة الله وبركاته 🌹";
+  }
 
       if (
         message.includes('مرحبا') || message.includes('اهلا') || message.includes('السلام') ||
