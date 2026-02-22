@@ -1,0 +1,213 @@
+.codelab-page {
+    min-height: 100vh;
+    background: #f0f2f5;
+    font-family: 'Tajawal', sans-serif;
+}
+
+.codelab-header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.codelab-header h1 {
+    margin: 0;
+    font-size: 2em;
+}
+
+.codelab-layout {
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+}
+
+/* القائمة الجانبية */
+.challenges-sidebar {
+    width: 280px;
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    position: sticky;
+    top: 20px;
+    height: fit-content;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f0f2f5;
+}
+
+.sidebar-header h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.close-sidebar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: #f0f2f5;
+    color: #6c757d;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.close-sidebar:hover {
+    background: #e4e6e9;
+    color: #dc3545;
+    transform: rotate(90deg);
+}
+
+.challenges-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.challenge-item {
+    padding: 15px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    background: #f8f9fa;
+}
+
+.challenge-item:hover {
+    background: white;
+    border-color: #667eea;
+    transform: translateX(-5px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.challenge-item.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-color: transparent;
+    box-shadow: 0 6px 15px rgba(102, 126, 234, 0.3);
+}
+
+.challenge-item.active .challenge-item-title {
+    color: white;
+}
+
+.challenge-item.active .difficulty {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.challenge-item-title {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 8px;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.challenge-item-meta {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.difficulty {
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    display: inline-block;
+    transition: all 0.2s;
+}
+
+.difficulty.beginner {
+    background: #e6f7e6;
+    color: #2e7d32;
+}
+
+.difficulty.intermediate {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.difficulty.advanced {
+    background: #ffebee;
+    color: #c62828;
+}
+
+/* زر إظهار القائمة عند إخفائها */
+.show-sidebar-btn {
+    position: fixed;
+    left: 20px;
+    top: 100px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    z-index: 100;
+    transition: all 0.3s ease;
+}
+
+.show-sidebar-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+}
+
+.codelab-main {
+    flex: 1;
+}
+
+@media (max-width: 768px) {
+    .codelab-layout {
+        flex-direction: column;
+    }
+    
+    .challenges-sidebar {
+        width: 100%;
+        position: static;
+    }
+    
+    .challenge-item:hover {
+        transform: translateX(0);
+    }
+}
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.close-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+    background: #f0f2f5;
+    transform: scale(1.1);
+}
