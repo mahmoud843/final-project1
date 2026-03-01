@@ -1,62 +1,206 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Sign Up</title>
-    <link rel="stylesheet" href="sign up.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up</title>
+
+<style>
+:root{
+    --bg:#f0f2f5;
+    --card:#ffffff;
+    --text:#1c1e21;
+    --sub:#606770;
+    --border:#dddfe2;
+    --primary:#1877f2;
+}
+
+body.dark{
+    --bg:#18191a;
+    --card:#242526;
+    --text:#e4e6eb;
+    --sub:#b0b3b8;
+    --border:#3a3b3c;
+    --primary:#2d88ff;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: Helvetica, Arial, sans-serif;
+    transition:0.3s;
+}
+
+body{
+    background:var(--bg);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+/* زرار الوضع */
+.toggle-mode{
+    position:absolute;
+    top:20px;
+    right:20px;
+    background:var(--primary);
+    border:none;
+    padding:8px 15px;
+    border-radius:20px;
+    color:#fff;
+    cursor:pointer;
+    font-size:13px;
+}
+
+/* الكارت */
+.container{
+    background:var(--card);
+    width:400px;
+    padding:25px;
+    border-radius:8px;
+    box-shadow:0 2px 15px rgba(0,0,0,0.2);
+}
+
+.container h2{
+    text-align:center;
+    margin-bottom:20px;
+    color:var(--primary);
+    font-size:26px;
+}
+
+/* الحقول */
+.input-group{
+    margin-bottom:15px;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    border-radius:6px;
+    border:1px solid var(--border);
+    background:transparent;
+    color:var(--text);
+    font-size:14px;
+    outline:none;
+}
+
+input:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 2px rgba(24,119,242,0.3);
+}
+
+.section{
+    margin-bottom:15px;
+}
+
+.section p{
+    font-size:14px;
+    margin-bottom:8px;
+    color:var(--sub);
+    font-weight:600;
+}
+
+.radio-group{
+    display:flex;
+    gap:15px;
+    color:var(--text);
+}
+
+/* الزر */
+button.submit-btn{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:6px;
+    background:var(--primary);
+    color:#fff;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button.submit-btn:hover{
+    opacity:0.9;
+}
+
+.login{
+    text-align:center;
+    margin-top:15px;
+    font-size:14px;
+    color:var(--sub);
+}
+
+.login a{
+    text-decoration:none;
+    color:var(--primary);
+    font-weight:600;
+}
+
+@media(max-width:450px){
+    .container{
+        width:90%;
+    }
+}
+</style>
 </head>
+
 <body>
 
-    <form id="registrationForm">
-        <h2>Sign Up</h2>
-        <div>
-            <label for="regUsername">Username</label>
-            <input type="text" id="regUsername" required placeholder="Enter your username">
+<button class="toggle-mode" onclick="toggleDarkMode()">Dark Mode</button>
+
+<div class="container">
+    <h2>Create Account</h2>
+
+    <form>
+
+        <div class="input-group">
+            <input type="text" placeholder="Username" required>
         </div>
-        <div>
-            <label for="regEmail">Email or Phone</label>
-            <input type="email" id="regEmail" required placeholder="Enter your email or phone number">
+
+        <div class="input-group">
+            <input type="email" placeholder="Email or phone number" required>
         </div>
-        <div>
-            <label for="regPassword">Password</label>
-            <input type="password" id="regPassword" required>
+
+        <div class="input-group">
+            <input type="password" placeholder="Password" required>
         </div>
-        <div>
-            <label for="regConfirmPassword">Confirm Password</label>
-            <input type="password" id="regConfirmPassword" required>
+
+        <div class="input-group">
+            <input type="password" placeholder="Confirm Password" required>
         </div>
-        <div class="row">
-            <div class="column-1">
-                <p class="gender">Gender:</p>
-                <div class="male-input">
-                    <input type="radio" id="male" name="gender" value="male" required>
-                    <label class="label-male" for="male">Male</label>
-                </div>
-                <div class="female-input">
-                    <input type="radio" id="female" name="gender" value="female">
-                    <label for="female">Female</label>
-                </div>
-            </div>
-            <div class="column-2">
-                <p>How much do you know about programming?</p>
-                <div class="beginner">
-                    <input type="radio" id="beginner" name="programming" value="beginner" required>
-                    <label for="beginner">Beginner</label>
-                </div>
-                <div class="professional">
-                    <input type="radio" id="professional" name="programming" value="professional">
-                    <label for="professional">Professional</label>
-                </div>
+
+        <div class="section">
+            <p>Gender</p>
+            <div class="radio-group">
+                <label><input type="radio" name="gender" required> Male</label>
+                <label><input type="radio" name="gender"> Female</label>
             </div>
         </div>
-        <button type="submit" onclick="SignupUser(event)">Sign Up</button>
-    
-        <div class="message" id="message">
-        <div class="login-message">
-            <p>Already have an account? <a href="login.html" id="login">log in</a></p>  
+
+        <div class="section">
+            <p>Programming Level</p>
+            <div class="radio-group">
+                <label><input type="radio" name="level" required> Beginner</label>
+                <label><input type="radio" name="level"> Professional</label>
+            </div>
         </div>
-    </div>
+
+        <button type="submit" class="submit-btn">Sign Up</button>
+
+        <div class="login">
+            Already have an account? <a href="#">Log in</a>
+        </div>
+
     </form>
-    
-    <script src="sign up.js"></script>
-    </body>
-    </html>
+</div>
+
+<script>
+function toggleDarkMode(){
+    document.body.classList.toggle("dark");
+}
+</script>
+
+</body>
+</html>
