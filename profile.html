@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Monarmez</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='mysite.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <!-- الـ Navbar الجانبي -->
+    <nav>
+        <div class="navbar">
+            <div class="text-logo">
+                <img decoding="async" src="{{ url_for('static', filename='images/logo-svg.svg') }}" id="Dark-mode" alt="logo" onerror="this.style.display='none'">
+            </div>
+            
+            <!-- Home (تم التعديل إلى home_page) -->
+            <div class="sub-section">
+                <i class="fa-solid fa-home"></i>
+                <a href="{{ url_for('home_page') }}">Home</a>
+            </div>
+            
+            <!-- Dark Mode -->
+            <div class="sub-section" id="clicked">
+                <i class="fa-solid fa-sun"></i>
+                <a href="#">Dark-mode</a>
+            </div>
+            
+            <!-- Profile -->
+            <div class="sub-section">
+                <i class="fa-regular fa-user"></i>
+                <a href="{{ url_for('profile') }}">Profile</a>
+            </div>
+            
+            <!-- Hosting -->
+            <div class="sub-section">
+                <i class="fa-solid fa-server"></i>
+                <a href="#">Hosting</a>
+            </div>
+            
+            <!-- Communities -->
+            <div class="sub-section" id="communitiesSection">
+                <i class="fa-regular fa-comments"></i>
+                <a href="#" id="communitiesBtn">Communities</a>
+                <div class="languages-bar" id="languagesBar">
+                    <h3>Programming Languages</h3>
+                    <ul>
+                        <li>JavaScript</li>
+                        <li>Python</li>
+                        <li>HTML / CSS</li>
+                        <li>Node.js</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Code Lab (تم التعديل للربط الصحيح) -->
+            <div class="sub-section" id="hidden2">
+                <i class="fa-sharp fa-solid fa-laptop"></i>
+                <a href="{{ url_for('codelab_page') }}" target="_self">Code Lab</a>
+            </div>
+            
+            <!-- Shop -->
+            <div class="sub-section">
+                <i class="fa-solid fa-shop"></i>
+                <a href="#">shop</a>
+            </div>
+            
+            <!-- AI Chatbot (تم التصحيح إلى ai_page) -->
+            <div class="sub-section">
+                <i class="fa-solid fa-robot"></i>
+                <a href="{{ url_for('ai_page') }}">Ai Chatbot</a>
+            </div>
+            
+            <!-- Logout (إضافة زر تسجيل خروج) -->
+            <div class="sub-section">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <a href="{{ url_for('logout') }}" style="color: #dc3545;">Logout</a>
+            </div>
+            
+        </div>
+    </nav>
+
+    <!-- القسم الأوسط - محتوى البروفايل -->
+    <section class="middle-section">
+        <!-- رسائل Flask -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="post-area">
+            <div class="post-main">
+                <div class="post-header">
+                    <h1 style="color: var(--font-color); margin: 20px 0; text-align: center;">
+                        <i class="fa-regular fa-user"></i> Your Profile
+                    </h1>
+                </div>
+                
+                {% if user %}
+                <div style="text-align: center; padding: 20px;">
+                    <!-- صورة البروفايل -->
+                    <div style="width: 150px; height: 150px; border-radius: 50%; margin: 0 auto 20px; overflow: hidden; border: 3px solid #1b74e4;">
+                        <img src="{{ url_for('static', filename='images/default-avatar.png') }}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'">
+                    </div>
+                    
+                    <!-- معلومات المستخدم -->
+                    <h2 style="color: var(--font-color); margin-bottom: 10px;">{{ user.username }}</h2>
+                    <p style="color: var(--secod-font-color); margin-bottom: 5px;">
+                        <i class="fa-regular fa-envelope"></i> {{ user.email }}
+                    </p>
+                    <p style="color: var(--secod-font-color);">
+                        <i class="fa-regular fa-calendar"></i> Member since: {{ user.created_at.strftime('%Y-%m-%d') if user.created_at else 'Unknown' }}
+                    </p>
+
+                    <!-- أزرار الإجراءات -->
+                    <div style="display: flex; gap: 20px; justify-content: center; margin-top: 30px;">
+                        <a href="{{ url_for('create_project_page') }}" style="padding: 12px 30px; background: #1b74e4; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; text-decoration: none;">
+                            <i class="fa-solid fa-plus"></i> Create Project
+                        </a>
+                        <a href="{{ url_for('home_page') }}" style="padding: 12px 30px; background: #e4e6eb; color: #65676b; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; text-decoration: none;">
+                            <i class="fa-solid fa-home"></i> Back to Home
+                        </a>
+                    </div>
+                </div>
+                {% else %}
+                    <p style="text-align: center; color: var(--secod-font-color); padding: 50px;">User not found</p>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- القسم الجانبي الأيمن -->
+    <div class="container-2">
+        <div class="follow-section">
+            <div class="suggestion-follow">
+                <p class="suggestion">Quick Links</p>
+            </div>
+            
+            <!-- رابط Home -->
+            <a href="{{ url_for('home_page') }}" style="text-decoration: none;">
+                <div class="profile-follow profile-foolow-hovering" style="cursor: pointer;">
+                    <div class="profile-follow-left">
+                        <div class="profile-follow-image">
+                            <i class="fa-solid fa-home"></i>
+                        </div>
+                        <div class="profile-follow-content">
+                            <p class="profile-id">Home</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            
+            <!-- رابط Create Project -->
+            <a href="{{ url_for('create_project_page') }}" style="text-decoration: none;">
+                <div class="profile-follow profile-foolow-hovering" style="cursor: pointer;">
+                    <div class="profile-follow-left">
+                        <div class="profile-follow-image">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <div class="profile-follow-content">
+                            <p class="profile-id">Create Project</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            
+            <!-- حقوق النشر -->
+            <p class="copyrights">@All rights reserved by monarmez</p>
+        </div>
+    </div>
+</div>
+
+<!-- ربط ملف JavaScript -->
+<script src="{{ url_for('static', filename='mysite.js') }}"></script>
+
+</body>
+</html>
