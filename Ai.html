@@ -496,6 +496,13 @@ else if (message.includes('ازاي اتواصل معكم') ||
          message.includes('رقم التواصل')) { 
   return "تقدر تتواصل معانا من خلال صفحة التواصل داخل الموقع 📩 أو عن طريق البريد الإلكتروني الخاص بالدعم. فريقنا جاهز يرد عليك ويساعدك في أي استفسار.";
 }
+else if (message.includes('اسمي')) {
+  const name = userMessage.split('اسمي')[1].trim();
+  if (name) {
+    return `أهلاً يا ${name} 👋 كيف أستطيع مساعدتك؟`;
+  }
+  return "ممكن تكتب اسمك بعد كلمة (اسمي) 😊";
+}
       else if (message.includes('برمج') || message.includes('كود') || message.includes('code') || message.includes('html') || message.includes('css') || message.includes('جافا') || message.includes('javascript') || message.includes('python') || message.includes('بايثون')) { return getRandomResponse(knowledgeBase.programming); }
       else if (message.includes('نصيح') || message.includes('نصحة') || message.includes('advice') || message.includes('مساعدة') || message.includes('ساعدني') || message.includes('مشكلة')) { return getRandomResponse(knowledgeBase.advice); }
       else if (message.includes('طقس') || message.includes('weather') || message.includes('جو')) { return getRandomResponse(knowledgeBase.weather); }
@@ -549,4 +556,5 @@ else if (message.includes('ازاي اتواصل معكم') ||
   </script>
 </body>
 </html>
+
 
