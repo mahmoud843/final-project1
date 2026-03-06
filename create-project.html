@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <!-- Ace Editor CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.2/ace.js"></script>
-    <link rel="stylesheet" href="mysite.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='mysite.css') }}">
     <style>
         /* تنسيقات الصفحة */
         * {
@@ -16,12 +16,10 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             background: #f0f2f5;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
         }
-
         .container {
             display: flex;
             max-width: 1600px;
@@ -29,7 +27,6 @@
             padding: 20px;
             gap: 20px;
         }
-
         /* القائمة الجانبية */
         .sidebar {
             width: 250px;
@@ -41,11 +38,9 @@
             top: 20px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-
         .main-content {
             flex: 1;
         }
-
         /* الهيدر */
         .project-header {
             display: flex;
@@ -53,12 +48,10 @@
             justify-content: space-between;
             margin-bottom: 20px;
         }
-
         .project-header h1 {
             color: #2c3e50;
             font-size: 28px;
         }
-
         .close-btn {
             width: 40px;
             height: 40px;
@@ -70,13 +63,13 @@
             cursor: pointer;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             transition: all 0.2s;
+            text-decoration: none; /* مهم لأننا حولناه لرابط */
+            color: #333;
         }
-
         .close-btn:hover {
             background: #f0f2f5;
             transform: scale(1.1);
         }
-
         /* اختيار نوع المنشور */
         .post-type-selector {
             display: flex;
@@ -84,7 +77,6 @@
             margin-bottom: 20px;
             flex-wrap: wrap;
         }
-
         .type-btn {
             flex: 1;
             min-width: 120px;
@@ -102,21 +94,17 @@
             font-size: 14px;
             font-weight: 500;
         }
-
         .type-btn.active {
             background: #e7f3ff;
             border-color: #1b74e4;
             color: #1b74e4;
         }
-
         .type-btn i {
             font-size: 18px;
         }
-
         .type-btn.question i { color: #1b74e4; }
         .type-btn.project i { color: #e83e8c; }
         .type-btn.code i { color: #28a745; }
-
         /* معلومات المستخدم */
         .user-card {
             background: white;
@@ -128,33 +116,27 @@
             align-items: center;
             gap: 15px;
         }
-
         .user-avatar {
             width: 60px;
             height: 60px;
             border-radius: 50%;
             object-fit: cover;
         }
-
         .user-info h3 {
             color: #2c3e50;
             margin-bottom: 5px;
         }
-
         .user-info p {
             color: #65676b;
             font-size: 14px;
         }
-
         /* نماذج المنشورات */
         .post-form {
             display: none;
         }
-
         .post-form.active {
             display: block;
         }
-
         /* تنسيقات نموذج السؤال */
         .question-form {
             background: white;
@@ -163,11 +145,9 @@
             margin-bottom: 20px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-
         .form-group {
             margin-bottom: 20px;
         }
-
         .form-group label {
             display: block;
             margin-bottom: 8px;
@@ -175,7 +155,6 @@
             font-weight: 600;
             font-size: 14px;
         }
-
         .form-control {
             width: 100%;
             padding: 12px;
@@ -183,17 +162,14 @@
             border-radius: 8px;
             font-size: 14px;
         }
-
         .form-control:focus {
             outline: none;
             border-color: #1b74e4;
         }
-
         textarea.form-control {
             min-height: 150px;
             resize: vertical;
         }
-
         /* تنسيق محرر الأكواد للمشاريع */
         .code-editors {
             display: grid;
@@ -201,14 +177,12 @@
             gap: 15px;
             margin-bottom: 20px;
         }
-
         .editor-card {
             background: white;
             border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-
         .editor-header {
             background: #2c3e50;
             color: white;
@@ -218,20 +192,16 @@
             gap: 10px;
             font-weight: 600;
         }
-
         .editor-header i {
             font-size: 20px;
         }
-
         .editor-header.html { background: #e34c26; }
         .editor-header.css { background: #264de4; }
         .editor-header.js { background: #f7df1e; color: #000; }
-
         .editor-container {
             height: 300px;
             width: 100%;
         }
-
         /* معاينة النتيجة */
         .preview-section {
             background: white;
@@ -240,19 +210,16 @@
             margin-bottom: 20px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-
         .preview-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
         }
-
         .preview-header h2 {
             color: #2c3e50;
             font-size: 20px;
         }
-
         .run-btn {
             background: #1b74e4;
             color: white;
@@ -267,12 +234,10 @@
             gap: 8px;
             transition: all 0.2s;
         }
-
         .run-btn:hover {
             background: #1663c7;
             transform: translateY(-2px);
         }
-
         .preview-frame {
             width: 100%;
             height: 400px;
@@ -280,7 +245,6 @@
             border-radius: 8px;
             background: white;
         }
-
         /* أزرار الإجراءات */
         .action-buttons {
             display: flex;
@@ -288,7 +252,6 @@
             justify-content: flex-end;
             margin-top: 20px;
         }
-
         .btn {
             padding: 12px 30px;
             border: none;
@@ -297,27 +260,24 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
         }
-
         .btn-primary {
             background: #1b74e4;
             color: white;
         }
-
         .btn-primary:hover {
             background: #1663c7;
             transform: translateY(-2px);
         }
-
         .btn-secondary {
             background: #e4e6eb;
             color: #65676b;
         }
-
         .btn-secondary:hover {
             background: #d8dadf;
         }
-
         /* للشاشات الصغيرة */
         @media (max-width: 1000px) {
             .code-editors {
@@ -335,34 +295,34 @@
         <!-- القائمة الجانبية -->
         <div class="sidebar">
             <h2 style="color: #1b74e4; margin-bottom: 20px;">PAD</h2>
+            
+            <!-- تم تصحيح الروابط لـ home_page -->
             <div class="sub-section">
                 <i class="fa-solid fa-house"></i>
-                <a href="html.html">الرئيسية</a>
+                <a href="{{ url_for('home_page') }}">الرئيسية</a>
             </div>
             <div class="sub-section">
                 <i class="fa-solid fa-code"></i>
-                <a href="/projects">المشاريع</a>
+                <a href="{{ url_for('home_page') }}">المشاريع</a>
             </div>
             <div class="sub-section">
                 <i class="fa-solid fa-question"></i>
-                <a href="/questions">الأسئلة</a>
+                <a href="{{ url_for('home_page') }}">الأسئلة</a>
             </div>
             <div class="sub-section">
                 <i class="fa-solid fa-user"></i>
-                <a href="/profile">الملف الشخصي</a>
+                <a href="{{ url_for('profile') }}">الملف الشخصي</a>
             </div>
         </div>
-
         <!-- المحتوى الرئيسي -->
         <div class="main-content">
             <!-- الهيدر مع زر الرجوع (سهم) -->
             <div class="project-header">
                 <h1>✨ إنشاء منشور جديد</h1>
-                <div class="close-btn" onclick="window.location.href='html.html'">
+                <a href="{{ url_for('home_page') }}" class="close-btn">
                     <i class="fa-solid fa-arrow-right"></i>
-                </div>
+                </a>
             </div>
-
             <!-- اختيار نوع المنشور -->
             <div class="post-type-selector">
                 <button class="type-btn question active" onclick="switchPostType('question')">
@@ -378,16 +338,14 @@
                     <span>كود</span>
                 </button>
             </div>
-
             <!-- بطاقة المستخدم -->
             <div class="user-card">
-                <img src="sia.jpeg" alt="user" class="user-avatar">
+                <img src="{{ url_for('static', filename='images/sia.jpeg') }}" alt="user" class="user-avatar" onerror="this.src='https://via.placeholder.com/60'">
                 <div class="user-info">
-                    <h3>أحمد محمد</h3>
-                    <p>ahmed_dev</p>
+                    <h3>{% if session.username %}{{ session.username }}{% else %}أحمد محمد{% endif %}</h3>
+                    <p>{% if session.username %}@{{ session.username }}{% else %}@ahmed_dev{% endif %}</p>
                 </div>
             </div>
-
             <!-- نموذج السؤال (الافتراضي) -->
             <div id="questionForm" class="post-form active">
                 <div class="question-form">
@@ -418,7 +376,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- نموذج المشروع (محرر الأكواد) -->
             <div id="projectForm" class="post-form">
                 <!-- محررات الأكواد -->
@@ -431,7 +388,6 @@
                         </div>
                         <div id="html-editor" class="editor-container"></div>
                     </div>
-
                     <!-- محرر CSS -->
                     <div class="editor-card">
                         <div class="editor-header css">
@@ -440,7 +396,6 @@
                         </div>
                         <div id="css-editor" class="editor-container"></div>
                     </div>
-
                     <!-- محرر JavaScript -->
                     <div class="editor-card">
                         <div class="editor-header js">
@@ -450,7 +405,6 @@
                         <div id="js-editor" class="editor-container"></div>
                     </div>
                 </div>
-
                 <!-- معاينة النتيجة -->
                 <div class="preview-section">
                     <div class="preview-header">
@@ -463,19 +417,18 @@
                     <iframe id="preview" class="preview-frame" sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
                 </div>
             </div>
-
             <!-- أزرار الإجراءات -->
             <div class="action-buttons">
-                <button class="btn btn-secondary" onclick="window.location.href='html.html'">
+                <!-- تم تصحيح زر الإلغاء ليوجه للرئيسية -->
+                <a href="{{ url_for('home_page') }}" class="btn btn-secondary">
                     <i class="fa-solid fa-times"></i> إلغاء
-                </button>
+                </a>
                 <button class="btn btn-primary" onclick="publishPost()">
                     <i class="fa-solid fa-rocket"></i> نشر
                 </button>
             </div>
         </div>
     </div>
-
     <script>
         // تشغيل محررات الأكواد
         window.onload = function() {
@@ -490,7 +443,6 @@
                 enableBasicAutocompletion: true,
                 enableLiveAutocompletion: true
             });
-
             // محرر CSS
             var cssEditor = ace.edit("css-editor");
             cssEditor.setTheme("ace/theme/monokai");
@@ -500,7 +452,6 @@
                 fontSize: "14px",
                 showPrintMargin: false
             });
-
             // محرر JavaScript
             var jsEditor = ace.edit("js-editor");
             jsEditor.setTheme("ace/theme/monokai");
@@ -511,7 +462,6 @@
                 showPrintMargin: false
             });
         };
-
         // التبديل بين أنواع المنشورات
         function switchPostType(type) {
             // إخفاء كل النماذج
@@ -528,13 +478,11 @@
             });
             event.currentTarget.classList.add('active');
         }
-
         // تشغيل المشروع
         function runProject() {
             var html = ace.edit("html-editor").getValue();
             var css = ace.edit("css-editor").getValue();
             var js = ace.edit("js-editor").getValue();
-
             var preview = document.getElementById('preview');
             
             var fullCode = `
@@ -556,10 +504,8 @@
                 </body>
                 </html>
             `;
-
             preview.srcdoc = fullCode;
         }
-
         // نشر المنشور
         function publishPost() {
             // تحديد النوع النشط
@@ -574,7 +520,7 @@
                     description: document.getElementById('questionDesc').value,
                     code: document.getElementById('questionCode').value,
                     language: document.getElementById('questionLanguage').value,
-                    author: 'أحمد محمد',
+                    author: '{% if session.username %}{{ session.username }}{% else %}أحمد محمد{% endif %}',
                     date: new Date().toISOString()
                 };
             } else if (activeType === 'مشروع' || activeType === 'كود') {
@@ -583,7 +529,7 @@
                     html: ace.edit("html-editor").getValue(),
                     css: ace.edit("css-editor").getValue(),
                     js: ace.edit("js-editor").getValue(),
-                    author: 'أحمد محمد',
+                    author: '{% if session.username %}{{ session.username }}{% else %}أحمد محمد{% endif %}',
                     date: new Date().toISOString()
                 };
             }
@@ -591,8 +537,9 @@
             console.log('نشر:', postData);
             alert('✅ تم نشر المنشور بنجاح');
             
+            // تم التوجيه باستخدام url_for بشكل صحيح للمسار /home
             setTimeout(() => {
-                window.location.href = 'html.html';
+                window.location.href = "{{ url_for('home_page') }}";
             }, 1500);
         }
     </script>
