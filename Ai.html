@@ -467,6 +467,35 @@ window.onload = function() {
       if (message.includes('مرحبا') || message.includes('اهلا') || message.includes('السلام') || message.includes('هلا') || message.includes('ازيك') || message.includes('hello') || message.includes('hi')) { return getRandomResponse(knowledgeBase.greetings); }
       else if (message.includes('مع السلامة') || message.includes('وداع') || message.includes('باى') || message.includes('باي') || message.includes('bye')) { return getRandomResponse(knowledgeBase.farewells); }
       else if (message.includes('شكر') || message.includes('thank you') || message.includes('thanks') || message.includes('متشكر')) { return getRandomResponse(knowledgeBase.thanks); }
+     else if (message.includes('نسيت كلمة المرور') || 
+         message.includes('نسيت الباسورد') || 
+         message.includes('نسيت كلمة السر') || 
+         message.includes('forgot password') || 
+         message.includes('مش فاكر الباسورد')) { 
+  return "لو نسيت كلمة المرور 🔐 تقدر تضغط على زر (نسيت كلمة المرور) في صفحة تسجيل الدخول، وبعدها اكتب بريدك الإلكتروني وسيتم إرسال رابط لإعادة تعيين كلمة المرور الخاصة بك.";
+}
+else if (message.includes('كتب برمجة') || 
+         message.includes('اجيب كتب منين') || 
+         message.includes('كتب اكواد') || 
+         message.includes('كتب html') || 
+         message.includes('كتب برمجه منين') || 
+         message.includes('كتب تعلم البرمجة')) { 
+  return "لو عايز كتب لتعلم البرمجة 📚 تقدر تدخل على قسم Shopping عندنا في الموقع. متوفر كتب لتعلم HTML و CSS و JavaScript للمبتدئين وبأسعار بسيطة تناسبك. بعض الكتب المشهورة زي HTML & CSS Design and Build Websites و Head First HTML and CSS وكمان كتب JavaScript للمبتدئين.";
+}
+else if (message.includes('الموقع ده بيعمل اي') || 
+         message.includes('الموقع دا بيعمل اي') || 
+         message.includes('ايه هدف الموقع') || 
+         message.includes('هدف الموقع ايه') || 
+         message.includes('الموقع بتاعكم ايه')) { 
+  return "الموقع ده هدفه يساعدك تتعلم البرمجة وتطوير المواقع 💻 من خلال الشرح، الأكواد، والكتب التعليمية. ومن خلال موقعنا تقدر كمان تتعرف على ناس خبراء في البرمجة بطريقة بسيطة وسهلة. وموقعنا يهدف إلى تعليم جميع الفئات العمرية البرمجة بطريقة مبسطة تساعد أي حد يبدأ ويتطور في المجال.";
+}
+else if (message.includes('ازاي اتواصل معكم') || 
+         message.includes('كيف اتواصل معكم') || 
+         message.includes('التواصل معكم') || 
+         message.includes('اتواصل ازاي') || 
+         message.includes('رقم التواصل')) { 
+  return "تقدر تتواصل معانا من خلال صفحة التواصل داخل الموقع 📩 أو عن طريق البريد الإلكتروني الخاص بالدعم. فريقنا جاهز يرد عليك ويساعدك في أي استفسار.";
+}
       else if (message.includes('برمج') || message.includes('كود') || message.includes('code') || message.includes('html') || message.includes('css') || message.includes('جافا') || message.includes('javascript') || message.includes('python') || message.includes('بايثون')) { return getRandomResponse(knowledgeBase.programming); }
       else if (message.includes('نصيح') || message.includes('نصحة') || message.includes('advice') || message.includes('مساعدة') || message.includes('ساعدني') || message.includes('مشكلة')) { return getRandomResponse(knowledgeBase.advice); }
       else if (message.includes('طقس') || message.includes('weather') || message.includes('جو')) { return getRandomResponse(knowledgeBase.weather); }
@@ -520,3 +549,4 @@ window.onload = function() {
   </script>
 </body>
 </html>
+
