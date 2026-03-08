@@ -1,0 +1,92 @@
+/* استيراد خط حديث */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    /* خلفية متدرجة تتماشى مع باقي الموقع */
+    background: radial-gradient(circle at center, #162238 0%, #070b17 100%);
+    color: #eaf0ff;
+    overflow: hidden;
+}
+
+.container {
+    text-align: center;
+    /* تأثير زجاجي فخم */
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 60px 40px;
+    border-radius: 24px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+    animation: fadeIn 0.8s ease-out;
+}
+
+h1 {
+    font-size: 38px;
+    font-weight: 800;
+    margin-bottom: 40px;
+    /* نص متدرج */
+    background: linear-gradient(to right, #6ce5ff, #1b74e4);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent; 
+}
+
+.menu {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* مسافة متساوية بين الأزرار */
+}
+
+/* تنسيق موحد للزرارين */
+.btn {
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 14px 35px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* زر الـ Log in */
+.btn1 {
+    background: transparent;
+    color: #6ce5ff;
+    border: 2px solid #6ce5ff;
+}
+
+.btn1:hover {
+    background: rgba(108, 229, 255, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(108, 229, 255, 0.2);
+}
+
+/* زر الـ Sign up */
+.btn2 {
+    background: linear-gradient(135deg, #1b74e4, #0b53b3);
+    color: white;
+    border: 2px solid transparent;
+}
+
+.btn2:hover {
+    background: linear-gradient(135deg, #2684ff, #1262d1);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(27, 116, 228, 0.4);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}

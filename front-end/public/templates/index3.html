@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to PAD</title>
+    <!-- CSS مربوط بالـ Flask -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='start.css') }}">
+</head>
+<body>
+    
+    <div class="container">
+        <!-- عدلت الاسم لـ PAD عشان يعكس هويتك -->
+        <h1>Welcome to PAD</h1>
+        
+        <ul class="menu">
+            <!-- الروابط مربوطة بـ Flask routes -->
+            <li>
+                <a class="btn btn1" href="{{ url_for('login_page') }}" id="loginBtn">
+                    Log in
+                </a>
+            </li>
+            <li>
+                <a class="btn btn2" href="{{ url_for('signup_page') }}" id="signupBtn">
+                    Sign up
+                </a>
+            </li>
+        </ul>
+        
+        <!-- الـ container ده فاضي، لو كنت بتسخدمه في JS سيبه، لو ملوش لازمة ممكن تمسحه -->
+        <div id="formContainer"></div>
+    </div>
+
+    <!-- لو عندك JS خاص بصفحة البداية ضيفه هنا (لكن غالباً mysite.js ملوش لازمة هنا لأن الصفحة دي مجرد أزرار توجيه) -->
+    <!-- <script src="{{ url_for('static', filename='mysite.js') }}"></script> -->
+
+</body>
+</html>

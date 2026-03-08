@@ -1,0 +1,137 @@
+/* استيراد خط حديث */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    /* خلفية متدرجة فخمة مع إضاءات خفيفة */
+    background: radial-gradient(circle at top left, #162238, #070b17 70%);
+    color: #eaf0ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* تأثير زجاجي (Glassmorphism) للفورم */
+.form-container {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 40px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+    animation: fadeIn 0.6s ease-out;
+}
+
+h2 {
+    font-size: 32px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 30px;
+    background: linear-gradient(to right, #6ce5ff, #1b74e4);
+    -webkit-background-clip: text;
+    background-clip: text; /* السطر ده بيحل المشكلة */
+    -webkit-text-fill-color: transparent;
+    color: transparent; /* بديل قياسي عشان الألوان المتدرجة تبان */
+}
+
+
+.form-container div {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #a3b2cc;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+input[type="email"], input[type="password"], input[type="text"] {
+    width: 100%;
+    padding: 14px 16px;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    outline: none;
+    border-color: #1b74e4;
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 0 4px rgba(27, 116, 228, 0.15);
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #1b74e4, #0b53b3);
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(27, 116, 228, 0.3);
+}
+
+button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(27, 116, 228, 0.5);
+    background: linear-gradient(135deg, #2684ff, #1262d1);
+}
+
+.signup-message, .login-message {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 14px;
+    color: #8fa5de;
+}
+
+.signup-message a, .login-message a {
+    color: #6ce5ff;
+    font-weight: 600;
+    text-decoration: none;
+    margin-left: 5px;
+    transition: color 0.2s;
+}
+
+.signup-message a:hover, .login-message a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+/* تنسيق رسائل الخطأ من Flask */
+.message, .message2 {
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+.message { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; }
+.message2 { background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.3); color: #86efac; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
