@@ -1,184 +1,365 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile - Monarmez</title>
+    <title>Profile | PAD - Mahmoud Saleh</title>
+    
+    <!-- ربط خطوط جوجل الاحترافية -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Nunito:wght@400;600;800;900&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='mysite.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        /* =======================================
+           التنسيقات الأساسية
+           ======================================= */
+        body { 
+            background-color: #070b17; 
+            color: #eaf0ff; 
+            font-family: 'Nunito', sans-serif;
+            background-image: radial-gradient(circle at top right, rgba(27, 116, 228, 0.05), transparent 50%),
+                              radial-gradient(circle at bottom left, rgba(162, 139, 255, 0.05), transparent 50%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .code-font { font-family: 'JetBrains Mono', monospace; }
+
+        .btn-floating-back {
+            position: fixed; top: 20px; left: 20px; z-index: 1000;
+            background: rgba(15, 25, 51, 0.8); border: 1px solid rgba(145, 175, 255, 0.15);
+            color: #a3b8cc; padding: 10px 20px; border-radius: 50px;
+            font-weight: 800; font-size: 14px; text-decoration: none;
+            display: inline-flex; align-items: center; gap: 10px;
+            backdrop-filter: blur(10px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: all 0.3s ease;
+        }
+        .btn-floating-back:hover { background: #1b74e4; color: #fff; transform: translateX(-5px); border-color: #1b74e4; }
+
+        .profile-container { max-width: 1000px; margin: 60px auto 40px; padding: 20px; }
+
+        /* الهيدر */
+        .profile-header-card {
+            background: linear-gradient(145deg, rgba(15, 25, 51, 0.8), rgba(12, 19, 39, 0.9));
+            border: 1px solid rgba(145, 175, 255, 0.1); border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4); position: relative; overflow: hidden; backdrop-filter: blur(10px);
+        }
+        
+        .profile-cover {
+            height: 220px; background: url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80') center/cover;
+            position: relative;
+        }
+        .profile-cover::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, rgba(12, 19, 39, 1)); }
+
+        .profile-img-wrap { margin-top: -80px; position: relative; z-index: 2; display: inline-block; }
+        .profile-img { width: 160px; height: 160px; border-radius: 50%; border: 5px solid #0f1933; box-shadow: 0 0 30px rgba(27, 116, 228, 0.6); object-fit: cover; background-color: #fff; transition: filter 0.3s; }
+        
+        .edit-img-btn { position: absolute; bottom: 10px; right: 5px; width: 45px; height: 45px; border-radius: 50%; background: #1b74e4; color: white; border: 4px solid #0f1933; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.4); }
+        .edit-img-btn:hover { background: #6ce5ff; color: #000; transform: scale(1.1); }
+        #img-upload-input { display: none; }
+
+        .user-name { font-size: 34px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 5px; color: #fff;}
+        .user-bio { font-size: 16px; font-weight: 600; color: #a3b8cc; margin-bottom: 15px; letter-spacing: 0.5px;}
+        
+        .social-links a { color: #8fa5de; font-size: 22px; margin: 0 10px; transition: 0.3s; text-decoration: none;}
+        .social-links a:hover { color: #6ce5ff; transform: translateY(-3px); display: inline-block; text-shadow: 0 0 10px rgba(108,229,255,0.5);}
+
+        .level-badge { background: rgba(108, 229, 255, 0.15); border: 1px solid rgba(108, 229, 255, 0.3); color: #6ce5ff; padding: 6px 18px; border-radius: 50px; font-weight: 800; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;}
+
+        /* كروت الإحصائيات مع تحسين ألوان العناوين */
+        .stat-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px; transition: all 0.3s ease; height: 100%; padding: 25px !important;}
+        .stat-card:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.06); border-color: rgba(108, 229, 255, 0.3); box-shadow: 0 10px 20px rgba(0,0,0,0.2);}
+        .icon-box { width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 15px; }
+        
+        .bg-blue-glow { background: rgba(27, 116, 228, 0.15); color: #6ce5ff; box-shadow: 0 0 20px rgba(27, 116, 228, 0.25);}
+        .bg-purple-glow { background: rgba(162, 139, 255, 0.15); color: #c4b5fd; box-shadow: 0 0 20px rgba(162, 139, 255, 0.25);}
+        .bg-green-glow { background: rgba(34, 197, 94, 0.15); color: #6ee7b7; box-shadow: 0 0 20px rgba(34, 197, 94, 0.25);}
+
+        /* اللون الجديد الواضح للعناوين تحت الأرقام */
+        .stat-label { 
+            color: #b7c5ef; /* لون فاتح وواضح */
+            font-size: 13px; 
+            letter-spacing: 1.5px; 
+            text-transform: uppercase; 
+            font-weight: 800; 
+            display: block; 
+            margin-top: 5px;
+        }
+
+        /* الكروت العامة */
+        .detail-card { background: rgba(15, 25, 51, 0.4); border: 1px solid rgba(145, 175, 255, 0.08); border-radius: 24px; padding: 25px; height: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.15);}
+        .detail-card h5 { color: #fff; font-size: 18px; font-weight: 800; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px;}
+        
+        /* قسم Contribution Graph (الجديد) */
+        .contribution-graph { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-start; margin-top: 15px;}
+        .contrib-box { width: 14px; height: 14px; border-radius: 3px; background: rgba(255,255,255,0.05); transition: 0.2s; cursor: pointer;}
+        .contrib-box:hover { transform: scale(1.2); border: 1px solid #fff;}
+        .lvl-1 { background: #0e4429; }
+        .lvl-2 { background: #006d32; }
+        .lvl-3 { background: #26a641; }
+        .lvl-4 { background: #39d353; }
+
+        .skill-tag { background: rgba(108, 229, 255, 0.1); border: 1px solid rgba(108, 229, 255, 0.2); color: #6ce5ff; font-weight: 800; font-size: 13px; letter-spacing: 0.5px;}
+
+        .book-card { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 15px; display: flex; align-items: center; gap: 15px; transition: all 0.3s; }
+        .book-card:hover { border-color: #fbbf24; transform: scale(1.02); background: rgba(251, 191, 36, 0.05); box-shadow: 0 5px 15px rgba(251,191,36,0.1);}
+        .book-icon { font-size: 30px; color: #fbbf24; }
+        .book-info h6 { margin: 0 0 5px 0; color: #fff; font-size: 16px; font-weight: 800;}
+        .book-info p { margin: 0; color: #a3b8cc; font-size: 13px; font-weight: 600;}
+
+        .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; }
+    </style>
 </head>
 <body>
 
-<div class="container">
-    <!-- الـ Navbar الجانبي -->
-    <nav>
-        <div class="navbar">
-            <div class="text-logo">
-                <img decoding="async" src="{{ url_for('static', filename='images/logo-svg.svg') }}" id="Dark-mode" alt="logo" onerror="this.style.display='none'">
-            </div>
-            
-            <!-- Home (تم التعديل إلى home_page) -->
-            <div class="sub-section">
-                <i class="fa-solid fa-home"></i>
-                <a href="{{ url_for('home_page') }}">Home</a>
-            </div>
-            
-            <!-- Dark Mode -->
-            <div class="sub-section" id="clicked">
-                <i class="fa-solid fa-sun"></i>
-                <a href="#">Dark-mode</a>
-            </div>
-            
-            <!-- Profile -->
-            <div class="sub-section">
-                <i class="fa-regular fa-user"></i>
-                <a href="{{ url_for('profile') }}">Profile</a>
-            </div>
-            
-            <!-- Hosting -->
-            <div class="sub-section">
-                <i class="fa-solid fa-server"></i>
-                <a href="#">Hosting</a>
-            </div>
-            
-            <!-- Communities -->
-            <div class="sub-section" id="communitiesSection">
-                <i class="fa-regular fa-comments"></i>
-                <a href="#" id="communitiesBtn">Communities</a>
-                <div class="languages-bar" id="languagesBar">
-                    <h3>Programming Languages</h3>
-                    <ul>
-                        <li>JavaScript</li>
-                        <li>Python</li>
-                        <li>HTML / CSS</li>
-                        <li>Node.js</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <!-- Code Lab (تم التعديل للربط الصحيح) -->
-            <div class="sub-section" id="hidden2">
-                <i class="fa-sharp fa-solid fa-laptop"></i>
-                <a href="{{ url_for('codelab_page') }}" target="_self">Code Lab</a>
-            </div>
-            
-            <!-- Shop -->
-            <div class="sub-section">
-                <i class="fa-solid fa-shop"></i>
-                <a href="#">shop</a>
-            </div>
-            
-            <!-- AI Chatbot (تم التصحيح إلى ai_page) -->
-            <div class="sub-section">
-                <i class="fa-solid fa-robot"></i>
-                <a href="{{ url_for('ai_page') }}">Ai Chatbot</a>
-            </div>
-            
-            <!-- Logout (إضافة زر تسجيل خروج) -->
-            <div class="sub-section">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <a href="{{ url_for('logout') }}" style="color: #dc3545;">Logout</a>
-            </div>
-            
+<!-- زر الرجوع العائم المربوط بـ Flask -->
+<a href="{{ url_for('home_page') }}" class="btn-floating-back">
+    <i class="fa-solid fa-arrow-left"></i>
+    <span>Back to PAD</span>
+</a>
+
+<div class="profile-container">
+    
+    <!-- 1. الهيدر الشخصي -->
+    <div class="profile-header-card text-center mb-5">
+        <div class="profile-cover"></div>
+        
+        <div class="profile-img-wrap">
+            <img src="{{ url_for('static', filename='images/default-avatar.png') }}" alt="Avatar" class="profile-img" id="user-avatar" onerror="this.src='https://via.placeholder.com/160'">
+            <label for="img-upload-input" class="edit-img-btn" title="Change Profile Picture">
+                <i class="fa-solid fa-camera"></i>
+            </label>
+            <input type="file" id="img-upload-input" accept="image/png, image/jpeg, image/jpg">
         </div>
-    </nav>
-
-    <!-- القسم الأوسط - محتوى البروفايل -->
-    <section class="middle-section">
-        <!-- رسائل Flask -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-
-        <div class="post-area">
-            <div class="post-main">
-                <div class="post-header">
-                    <h1 style="color: var(--font-color); margin: 20px 0; text-align: center;">
-                        <i class="fa-regular fa-user"></i> Your Profile
-                    </h1>
-                </div>
-                
-                {% if user %}
-                <div style="text-align: center; padding: 20px;">
-                    <!-- صورة البروفايل -->
-                    <div style="width: 150px; height: 150px; border-radius: 50%; margin: 0 auto 20px; overflow: hidden; border: 3px solid #1b74e4;">
-                        <img src="{{ url_for('static', filename='images/default-avatar.png') }}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'">
-                    </div>
-                    
-                    <!-- معلومات المستخدم -->
-                    <h2 style="color: var(--font-color); margin-bottom: 10px;">{{ user.username }}</h2>
-                    <p style="color: var(--secod-font-color); margin-bottom: 5px;">
-                        <i class="fa-regular fa-envelope"></i> {{ user.email }}
-                    </p>
-                    <p style="color: var(--secod-font-color);">
-                        <i class="fa-regular fa-calendar"></i> Member since: {{ user.created_at.strftime('%Y-%m-%d') if user.created_at else 'Unknown' }}
-                    </p>
-
-                    <!-- أزرار الإجراءات -->
-                    <div style="display: flex; gap: 20px; justify-content: center; margin-top: 30px;">
-                        <a href="{{ url_for('create_project_page') }}" style="padding: 12px 30px; background: #1b74e4; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; text-decoration: none;">
-                            <i class="fa-solid fa-plus"></i> Create Project
-                        </a>
-                        <a href="{{ url_for('home_page') }}" style="padding: 12px 30px; background: #e4e6eb; color: #65676b; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; text-decoration: none;">
-                            <i class="fa-solid fa-home"></i> Back to Home
-                        </a>
-                    </div>
-                </div>
-                {% else %}
-                    <p style="text-align: center; color: var(--secod-font-color); padding: 50px;">User not found</p>
-                {% endif %}
+        
+        <div class="p-4 pt-2">
+            <h2 class="user-name">{% if session.username %}{{ session.username }}{% else %}Mahmoud Saleh{% endif %}</h2>
+            <p class="user-bio"><i class="fa-solid fa-terminal text-info me-2"></i>Founder & Full Stack Developer</p>
+            
+            <div class="social-links mb-4">
+                <a href="#" title="GitHub"><i class="fa-brands fa-github"></i></a>
+                <a href="#" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="#" title="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
             </div>
-        </div>
-    </section>
 
-    <!-- القسم الجانبي الأيمن -->
-    <div class="container-2">
-        <div class="follow-section">
-            <div class="suggestion-follow">
-                <p class="suggestion">Quick Links</p>
+            <span class="level-badge mb-4"><i class="fa-solid fa-bolt text-warning me-1"></i> Pad Admin</span>
+            
+            <div class="d-flex justify-content-center gap-3 mt-3">
+                <button class="btn btn-outline-light px-4 py-2 rounded-pill fw-bold border-secondary" onclick="copyProfileLink()">
+                    <i class="fa-solid fa-share-nodes me-2"></i> Share Profile
+                </button>
+                <button class="btn btn-primary px-4 py-2 rounded-pill shadow-sm fw-bold" style="background: #1b74e4; border:none;">
+                    <i class="fa-solid fa-pen-to-square me-2"></i> Edit Details
+                </button>
             </div>
-            
-            <!-- رابط Home -->
-            <a href="{{ url_for('home_page') }}" style="text-decoration: none;">
-                <div class="profile-follow profile-foolow-hovering" style="cursor: pointer;">
-                    <div class="profile-follow-left">
-                        <div class="profile-follow-image">
-                            <i class="fa-solid fa-home"></i>
-                        </div>
-                        <div class="profile-follow-content">
-                            <p class="profile-id">Home</p>
-                        </div>
-                    </div>
-                </div>
-            </a>
-            
-            <!-- رابط Create Project -->
-            <a href="{{ url_for('create_project_page') }}" style="text-decoration: none;">
-                <div class="profile-follow profile-foolow-hovering" style="cursor: pointer;">
-                    <div class="profile-follow-left">
-                        <div class="profile-follow-image">
-                            <i class="fa-solid fa-plus"></i>
-                        </div>
-                        <div class="profile-follow-content">
-                            <p class="profile-id">Create Project</p>
-                        </div>
-                    </div>
-                </div>
-            </a>
-            
-            <!-- حقوق النشر -->
-            <p class="copyrights">@All rights reserved by monarmez</p>
         </div>
     </div>
+
+    <!-- 2. شبكة الإحصائيات (Count Up Animation + توضيح الألوان) -->
+    <div class="row g-4 mb-5 text-center">
+        <div class="col-6 col-md-4">
+            <div class="stat-card">
+                <div class="icon-box bg-blue-glow"><i class="fa-solid fa-folder-open"></i></div>
+                <h2 class="text-white fw-bold mb-0 counter code-font" style="font-size: 36px;" data-target="18">0</h2>
+                <!-- لون واضح جداً -->
+                <span class="stat-label">Projects</span> 
+            </div>
+        </div>
+        <div class="col-6 col-md-4">
+            <div class="stat-card">
+                <div class="icon-box bg-purple-glow"><i class="fa-solid fa-users"></i></div>
+                <h2 class="text-white fw-bold mb-0 counter code-font" style="font-size: 36px;" data-target="1240">0</h2>
+                <span class="stat-label">Followers</span>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="stat-card">
+                <div class="icon-box bg-green-glow"><i class="fa-solid fa-flask"></i></div>
+                <h2 class="text-white fw-bold mb-0 counter code-font" style="font-size: 36px;" data-target="86">0</h2>
+                <span class="stat-label">Labs Solved</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. قسم جديد: Activity Graph (زي GitHub) -->
+    <div class="detail-card mb-5">
+        <h5><i class="fa-solid fa-chart-simple text-success me-2"></i> Coding Activity (Last 30 Days)</h5>
+        <div class="contribution-graph" id="contrib-graph">
+            <!-- بيتم توليد المربعات بالجافاسكريبت تحت -->
+        </div>
+        <div class="d-flex justify-content-end align-items-center mt-3 gap-2" style="font-size: 12px; color: var(--muted);">
+            <span>Less</span>
+            <div class="contrib-box"></div>
+            <div class="contrib-box lvl-1"></div>
+            <div class="contrib-box lvl-2"></div>
+            <div class="contrib-box lvl-3"></div>
+            <div class="contrib-box lvl-4"></div>
+            <span>More</span>
+        </div>
+    </div>
+
+       <!-- 4. قسم مكتبة PAD المرئية (Visual Books) -->
+    <div class="detail-card mb-5">
+        <h5><i class="fa-solid fa-photo-film text-warning me-2"></i> PAD Visual Books</h5>
+        <p style="color: var(--muted); font-size: 13px; margin-top: -15px; margin-bottom: 20px;">
+            Your purchased interactive & visual learning materials from our store.
+        </p>
+        <div class="row g-3 mt-1">
+            <!-- الكتاب المرئي الأول -->
+            <div class="col-md-4">
+                <div class="book-card" style="cursor: pointer;" title="Watch Now">
+                    <!-- أيقونة تدمج الكتاب والفيديو -->
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-book book-icon"></i>
+                        <i class="fa-solid fa-circle-play" style="position: absolute; bottom: -5px; right: -5px; color: #fff; font-size: 14px; background: #000; border-radius: 50%;"></i>
+                    </div>
+                    <div class="book-info">
+                        <h6>Python: The Visual Guide</h6>
+                        <p>PAD Originals </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- الكتاب المرئي الثاني -->
+            <div class="col-md-4">
+                <div class="book-card" style="cursor: pointer;" title="Watch Now">
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-book book-icon" style="color: #38bdf8;"></i>
+                        <i class="fa-solid fa-circle-play" style="position: absolute; bottom: -5px; right: -5px; color: #fff; font-size: 14px; background: #000; border-radius: 50%;"></i>
+                    </div>
+                    <div class="book-info">
+                        <h6>Mastering CSS Visually</h6>
+                        <p>PAD Originals </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- الكتاب المرئي الثالث -->
+            <div class="col-md-4">
+                <div class="book-card" style="cursor: pointer;" title="Watch Now">
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-book book-icon" style="color: #ef4444;"></i>
+                        <i class="fa-solid fa-circle-play" style="position: absolute; bottom: -5px; right: -5px; color: #fff; font-size: 14px; background: #000; border-radius: 50%;"></i>
+                    </div>
+                    <div class="book-info">
+                        <h6>Interactive JavaScript</h6>
+                        <p>PAD Originals </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. قسم المهارات ونشاط الاستضافة -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-7">
+            <div class="detail-card">
+                <h5><i class="fa-solid fa-laptop-code text-info me-2"></i> Tech Stack</h5>
+                <div class="d-flex flex-wrap gap-2 mt-3 code-font">
+                    <span class="badge skill-tag py-2 px-3">Python</span>
+                    <span class="badge skill-tag py-2 px-3">Flask</span>
+                    <span class="badge skill-tag py-2 px-3">JavaScript ES6</span>
+                    <span class="badge skill-tag py-2 px-3">HTML5 / CSS3</span>
+                    <span class="badge skill-tag py-2 px-3">MySQL</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="detail-card">
+                <h5><i class="fa-solid fa-server text-success me-2"></i> Hosting Activity</h5>
+                <div class="d-flex justify-content-between align-items-center mb-3 bg-dark bg-opacity-50 p-3 rounded">
+                    <!-- تعديل لون Active Sites -->
+                    <span class="stat-label m-0" style="font-size: 14px;"><i class="fa-solid fa-globe me-2"></i> Active Sites</span>
+                    <span class="fs-5 fw-bold text-white code-font">2 <i class="fa-solid fa-circle-check text-success fs-6 ms-1"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
-<!-- ربط ملف JavaScript -->
-<script src="{{ url_for('static', filename='mysite.js') }}"></script>
+<div class="toast-container"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // 1. توليد مربعات النشاط (GitHub Style Graph)
+    const graphContainer = document.getElementById('contrib-graph');
+    for (let i = 0; i < 90; i++) {
+        const box = document.createElement('div');
+        box.className = 'contrib-box';
+        // إضافة لون عشوائي للمربعات لمحاكاة النشاط
+        const rand = Math.random();
+        if(rand > 0.8) box.classList.add('lvl-4');
+        else if(rand > 0.6) box.classList.add('lvl-3');
+        else if(rand > 0.4) box.classList.add('lvl-2');
+        else if(rand > 0.2) box.classList.add('lvl-1');
+        
+        graphContainer.appendChild(box);
+    }
+
+    // 2. تغيير الصورة
+    const imageInput = document.getElementById('img-upload-input');
+    const avatarImg = document.getElementById('user-avatar');
+
+    imageInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                avatarImg.src = e.target.result;
+                showToast("تم تحديث صورة البروفايل بنجاح!", "success");
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // 3. عداد الأرقام
+    const counters = document.querySelectorAll('.counter');
+    counters.forEach(counter => {
+        const updateCount = () => {
+            const target = +counter.getAttribute('data-target');
+            const count = +counter.innerText;
+            const inc = target / 100;
+            if (count < target) {
+                counter.innerText = Math.ceil(count + inc);
+                setTimeout(updateCount, 20);
+            } else {
+                counter.innerText = target;
+            }
+        };
+        updateCount();
+    });
+
+    // 4. نسخ الرابط
+    function copyProfileLink() {
+        const dummy = document.createElement('input');
+        document.body.appendChild(dummy);
+        dummy.value = window.location.href;
+        dummy.select();
+        document.execCommand('copy');
+        document.body.removeChild(dummy);
+        showToast("Profile link copied to clipboard!", "primary");
+    }
+
+    function showToast(message, type) {
+        const icon = type === 'success' ? 'fa-check-circle' : 'fa-info-circle';
+        const colorClass = type === 'success' ? 'text-bg-success' : 'text-bg-primary';
+        const toastHTML = `
+            <div class="toast align-items-center ${colorClass} border-0 show mb-2 shadow-lg" role="alert">
+              <div class="d-flex">
+                <div class="toast-body fw-bold" style="font-family: 'Nunito', sans-serif;">
+                  <i class="fa-solid ${icon} me-2"></i> ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+              </div>
+            </div>`;
+        const container = document.querySelector('.toast-container');
+        container.innerHTML += toastHTML;
+        setTimeout(() => { if(container.firstChild) container.removeChild(container.firstChild); }, 3000);
+    }
+</script>
 </body>
 </html>
