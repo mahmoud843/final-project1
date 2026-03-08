@@ -465,6 +465,17 @@ window.onload = function() {
       
       if (message.includes('سلام عليكم')) { return "وعليكم السلام ورحمة الله وبركاته 🌹"; }
       if (message.includes('مرحبا') || message.includes('اهلا') || message.includes('السلام') || message.includes('هلا') || message.includes('ازيك') || message.includes('hello') || message.includes('hi')) { return getRandomResponse(knowledgeBase.greetings); }
+     else if (
+   message.includes('ازاي اتعلم بايثون من الموقع') ||
+  message.includes('ازاي اتعلم البايثون') ||
+  message.includes('ازاي اتعلم python') ||
+  message.includes('اتعلم بايثون') ||
+  message.includes('تعلم بايثون') ||
+  message.includes('تعلم python') ||
+  message.includes('تعلم البايثون من الموقع')
+) { 
+  return "أهلاً 👋 تعليم البرمجة سهل جداً من خلال موقعنا. تقدر تدخل على صفحة Code Lab وتختار لغة Python. بعدها هيبدأ يعرض لك أكواد من الأسهل للأصعب، وتقدر تتعلم خطوة بخطوة وتكتب الكود بنفسك لحد ما تتقن اللغة 💻.";
+}
       else if (message.includes('مع السلامة') || message.includes('وداع') || message.includes('باى') || message.includes('باي') || message.includes('bye')) { return getRandomResponse(knowledgeBase.farewells); }
       else if (message.includes('شكر') || message.includes('thank you') || message.includes('thanks') || message.includes('متشكر')) { return getRandomResponse(knowledgeBase.thanks); }
      else if (message.includes('نسيت كلمة المرور') || 
@@ -474,6 +485,7 @@ window.onload = function() {
          message.includes('مش فاكر الباسورد')) { 
   return "لو نسيت كلمة المرور 🔐 تقدر تضغط على زر (نسيت كلمة المرور) في صفحة تسجيل الدخول، وبعدها اكتب بريدك الإلكتروني وسيتم إرسال رابط لإعادة تعيين كلمة المرور الخاصة بك.";
 }
+
 else if (message.includes('كتب برمجة') || 
          message.includes('اجيب كتب منين') || 
          message.includes('كتب اكواد') || 
@@ -496,6 +508,7 @@ else if (message.includes('ازاي اتواصل معكم') ||
          message.includes('رقم التواصل')) { 
   return "تقدر تتواصل معانا من خلال صفحة التواصل داخل الموقع 📩 أو عن طريق البريد الإلكتروني الخاص بالدعم. فريقنا جاهز يرد عليك ويساعدك في أي استفسار.";
 }
+
 else if (message.includes('اسمي')) {
   const name = userMessage.split('اسمي')[1].trim();
   if (name) {
@@ -556,5 +569,3 @@ else if (message.includes('اسمي')) {
   </script>
 </body>
 </html>
-
-
