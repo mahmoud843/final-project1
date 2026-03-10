@@ -293,25 +293,49 @@
         updateCart();
     }
 
-    function checkout() {
+      // عملية الدفع (مربوطة بـ Flask API)
+    async function checkout() {
         if(cart.length === 0) return showToast("Your cart is empty!", "error");
-        alert("Redirecting to secure payment gateway...");
-        cart = []; updateCart();
-        bootstrap.Offcanvas.getInstance(document.getElementById('cartOffcanvas')).hide();
+        
+        // حساب المجموع الكلي
+        let totalAmount = 0;
+        cart.forEach(item => { totalAmount += (item.price * item.qty); });
+
+        const checkoutBtn = document.querySelector('button[onclick="checkout()"]');
+        const originalText = checkoutBtn.innerHTML;
+        checkoutBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+        checkoutBtn.disabled = true;
+
+        try {
+            const response = await fetch("{{ url_for('checkout') }}", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    cart: cart,
+                    total: totalAmount
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.status === 'success') {
+                showToast(result.message, "success");
+                cart = []; // تفريغ السلة بعد نجاح الشراء
+                updateCart();
+                // إغلاق السلة
+                bootstrap.Offcanvas.getInstance(document.getElementById('cartOffcanvas')).hide();
+            } else {
+                showToast("Error: " + result.message, "error");
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showToast("Connection error occurred.", "error");
+        } finally {
+            checkoutBtn.innerHTML = originalText;
+            checkoutBtn.disabled = false;
+        }
     }
 
-    // الفلاتر والبحث
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            e.target.classList.add('active');
-            renderProducts(e.target.getAttribute('data-filter'), document.getElementById('searchInput').value.toLowerCase());
-        });
-    });
-
-    document.getElementById('searchInput').addEventListener('input', (e) => {
-        renderProducts(document.querySelector('.filter-btn.active').getAttribute('data-filter'), e.target.value.toLowerCase());
-    });
 
     // نظام التنبيهات
     function showToast(message, type="success") {
