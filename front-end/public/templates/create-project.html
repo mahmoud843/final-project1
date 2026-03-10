@@ -292,28 +292,7 @@
 </head>
 <body>
     <div class="container">
-        <!-- القائمة الجانبية -->
-        <div class="sidebar">
-            <h2 style="color: #1b74e4; margin-bottom: 20px;">PAD</h2>
-            
-            <!-- تم تصحيح الروابط لـ home_page -->
-            <div class="sub-section">
-                <i class="fa-solid fa-house"></i>
-                <a href="{{ url_for('home_page') }}">الرئيسية</a>
-            </div>
-            <div class="sub-section">
-                <i class="fa-solid fa-code"></i>
-                <a href="{{ url_for('home_page') }}">المشاريع</a>
-            </div>
-            <div class="sub-section">
-                <i class="fa-solid fa-question"></i>
-                <a href="{{ url_for('home_page') }}">الأسئلة</a>
-            </div>
-            <div class="sub-section">
-                <i class="fa-solid fa-user"></i>
-                <a href="{{ url_for('profile') }}">الملف الشخصي</a>
-            </div>
-        </div>
+      
         <!-- المحتوى الرئيسي -->
         <div class="main-content">
             <!-- الهيدر مع زر الرجوع (سهم) -->
@@ -506,42 +485,67 @@
             `;
             preview.srcdoc = fullCode;
         }
-        // نشر المنشور
-        function publishPost() {
-            // تحديد النوع النشط
-            const activeType = document.querySelector('.type-btn.active span').textContent;
+        // نشر المنشور (مربوط بـ Flask API)
+        async function publishPost() {
+            const activeBtn = document.querySelector('.type-btn.active');
+            if (!activeBtn) return;
+            
+            const activeType = activeBtn.classList.contains('question') ? 'question' : 
+                               activeBtn.classList.contains('project') ? 'project' : 'code';
             
             let postData = {};
             
-            if (activeType === 'سؤال') {
+            if (activeType === 'question') {
                 postData = {
                     type: 'question',
                     title: document.getElementById('questionTitle').value,
                     description: document.getElementById('questionDesc').value,
                     code: document.getElementById('questionCode').value,
-                    language: document.getElementById('questionLanguage').value,
-                    author: '{% if session.username %}{{ session.username }}{% else %}أحمد محمد{% endif %}',
-                    date: new Date().toISOString()
+                    language: document.getElementById('questionLanguage').value
                 };
-            } else if (activeType === 'مشروع' || activeType === 'كود') {
+            } else {
                 postData = {
-                    type: activeType === 'مشروع' ? 'project' : 'code',
+                    type: activeType,
+                    title: document.getElementById('questionTitle') ? document.getElementById('questionTitle').value : "New Project", // عشان لو مفيش title يبعت اسم افتراضي
+                    description: "Project/Code from Code Lab",
                     html: ace.edit("html-editor").getValue(),
                     css: ace.edit("css-editor").getValue(),
-                    js: ace.edit("js-editor").getValue(),
-                    author: '{% if session.username %}{{ session.username }}{% else %}أحمد محمد{% endif %}',
-                    date: new Date().toISOString()
+                    js: ace.edit("js-editor").getValue()
                 };
             }
             
-            console.log('نشر:', postData);
-            alert('✅ تم نشر المنشور بنجاح');
-            
-            // تم التوجيه باستخدام url_for بشكل صحيح للمسار /home
-            setTimeout(() => {
-                window.location.href = "{{ url_for('home_page') }}";
-            }, 1500);
+            // تغيير نص الزرار عشان اليوزر يعرف إنه بيحمل
+            const publishBtn = document.querySelector('.btn-primary[onclick="publishPost()"]');
+            const originalBtnText = publishBtn.innerHTML;
+            publishBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري النشر...';
+            publishBtn.disabled = true;
+
+            try {
+                // إرسال البيانات لسيرفر Flask
+                const response = await fetch("{{ url_for('publish_post') }}", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(postData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    alert('✅ ' + result.message);
+                    window.location.href = "{{ url_for('home_page') }}"; // التوجيه للصفحة الرئيسية
+                } else {
+                    alert('❌ خطأ: ' + result.message);
+                    publishBtn.innerHTML = originalBtnText;
+                    publishBtn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ حدث خطأ في الاتصال بالخادم.');
+                publishBtn.innerHTML = originalBtnText;
+                publishBtn.disabled = false;
+            }
         }
+
     </script>
 </body>
 </html>
