@@ -116,17 +116,77 @@
                 </div>
             </div>
         </a>
-
-                                    
-
-        <div class="post-area">
+        <!-- منطقة المنشورات -->
+                <div class="post-area">
             
-            <!-- المنشور الأول -->
+            <!-- ===== بداية عرض البوستات الحقيقية (الديناميكية) ===== -->
+            {% if posts %}
+                {% for post in posts %}
+                <div class="post-main" style="border: 1px solid rgba(27,116,228,0.5); box-shadow: 0 5px 15px rgba(27,116,228,0.1); position: relative;">
+                    <div class="post-header">
+                        <div class="post-left-header">
+                            <div class="post-image">
+                                <!-- تم إصلاح مشكلة مسار الصورة بشكل نهائي لتجنب الـ Error -->
+                                <img src="{{ url_for('static', filename='images/' + (post.profile_image if post.profile_image else 'default-avatar.png')) }}" alt="avatar" onerror="this.src='/static/images/default-avatar.png'">
+                            </div>
+                            <p class="post-username">{{ post.username }} <span class="one-day" style="font-size: 11px;"> . Just now</span></p>
+                        </div>
+                        
+                        <!-- أيقونة المسح والقائمة -->
+                        <div style="display: flex; gap: 15px; align-items: center;">
+                            <!-- شرط: لو اليوزر هو صاحب البوست، يظهر زرار المسح -->
+                            {% if session.user_id == post.user_id %}
+          <i class="fa-solid fa-trash delete-btn" style="color: #ef4444; cursor: pointer; transition: 0.3s;" title="مسح المنشور نهائياً" data-post-id="{{ post.id }}" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'"></i>
+
+                            {% endif %}
+                            <i class="fa-solid fa-grip-lines" style="color: var(--text-muted);"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="post-main-image" style="padding: 0 20px 10px;">
+                        <h3 style="color: #6ce5ff; margin-bottom: 5px; font-size: 18px;">{{ post.title }}</h3>
+                        <p style="color: #eaf0ff; line-height: 1.6; margin-bottom: 15px; font-size: 14px;">{{ post.description }}</p>
+                        
+                        <!-- لو البوست فيه كود هيتعرض كـ Snippet -->
+                        {% if post.code_content or post.html_content %}
+                        <div style="background: #070b17; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 15px; overflow-x: auto;">
+                            <div style="margin-bottom: 10px; color: #8fa5de; font-size: 12px; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 5px;">
+                                <i class="fa-solid fa-code" style="color: #fbbf24;"></i> {{ post.programming_language | upper }} Snippet
+                            </div>
+                            <pre style="color: #40ffb0; margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 13px; direction: ltr; text-align: left;">{% if post.post_type == 'question' %}{{ post.code_content }}{% else %}{{ post.html_content }}{% endif %}</pre>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="post-fotter" style="padding-top: 5px;">
+                        <div class="post-fotter-left">
+                            <i class="fa-sharp-duotone fa-solid fa-star"></i>
+                            <i class="fa-sharp-duotone fa-solid fa-comments"></i>
+                            <i class="fa-sharp-duotone fa-solid fa-share"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="post-description">
+                        <p class="post-liked">Be the first to like this</p>
+                        <div class="comment-section">
+                            <ul id="commentList-{{ post.id }}"></ul>
+                            <div class="input2-container">
+                                <input type="text" class="input2" id="commentInput-{{ post.id }}" placeholder="Add a comment...">
+                                <button onclick="addComment('commentInput-{{ post.id }}', 'commentList-{{ post.id }}')">Post</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+            <!-- ===== نهاية عرض البوستات الحقيقية ===== -->
+
+            <!-- المنشور الأول (To Do List) -->
             <div class="post-main">
                 <div class="post-header">
                     <div class="post-left-header">
                         <div class="post-image">
-                            <img decoding="async" src="{{ url_for('static', filename='images/sia.jpeg') }}" alt="" onerror="this.src='https://via.placeholder.com/40'">
+                            <img decoding="async" src="{{ url_for('static', filename='images/sia.jpeg') }}" alt="" onerror="this.src='/static/images/default-avatar.png'">
                         </div>
                         <p class="post-username">sia</p>
                         <span class="one-day"> . 1h </span>
@@ -162,12 +222,12 @@
                 </div>
             </div>
 
-            <!-- المنشور الثاني -->
+            <!-- المنشور الثاني (Snake Game) -->
             <div class="post-main">
                 <div class="post-header">
                     <div class="post-left-header">
                         <div class="post-image">
-                            <img decoding="async" src="{{ url_for('static', filename='images/img4.jpeg') }}" alt="" onerror="this.src='https://via.placeholder.com/40'">
+                            <img decoding="async" src="{{ url_for('static', filename='images/img4.jpeg') }}" alt="" onerror="this.src='/static/images/default-avatar.png'">
                         </div>
                         <p class="post-username">eyad</p>
                         <span class="one-day"> . 1d </span>
@@ -209,14 +269,14 @@
                 <div class="post-header">
                     <div class="post-left-header">
                         <div class="post-image">
-                            <img decoding="async" src="{{ url_for('static', filename='images/img3.jpeg') }}" alt="" onerror="this.src='https://via.placeholder.com/40'">
+                            <img decoding="async" src="{{ url_for('static', filename='images/img3.jpeg') }}" alt="" onerror="this.src='/static/images/default-avatar.png'">
                         </div>
                         <p class="post-username">mohamed</p>
                         <span class="one-day"> . 5h </span>
                     </div>
                 </div>
                 <div class="post-main-image">
-                    <h3>Where can I learn JavaScript here?</h3>
+                    <h3 style="padding: 20px;">Where can I learn JavaScript here?</h3>
                 </div>
                 <div class="post-fotter">
                     <div class="post-fotter-left">
@@ -239,12 +299,12 @@
                 </div>
             </div>
 
-            <!-- المنشور الرابع -->
+            <!-- المنشور الرابع (Rock Paper Scissors) -->
             <div class="post-main">
                 <div class="post-header">
                     <div class="post-left-header">
                         <div class="post-image">
-                            <img decoding="async" src="{{ url_for('static', filename='images/img1.jpeg') }}" alt="" onerror="this.src='https://via.placeholder.com/40'">
+                            <img decoding="async" src="{{ url_for('static', filename='images/img1.jpeg') }}" alt="" onerror="this.src='/static/images/default-avatar.png'">
                         </div>
                         <p class="post-username">holland</p>
                         <span class="one-day"> . 5d </span>
@@ -305,12 +365,12 @@
                 </div>
             </div>
 
-            <!-- المنشور الخامس -->
+            <!-- المنشور الخامس (X O) -->
             <div class="post-main">
                 <div class="post-header">
                     <div class="post-left-header">
                         <div class="post-image">
-                            <img decoding="async" src="{{ url_for('static', filename='images/john.jpeg') }}" alt="" onerror="this.src='https://via.placeholder.com/40'">
+                            <img decoding="async" src="{{ url_for('static', filename='images/john.jpeg') }}" alt="" onerror="this.src='/static/images/default-avatar.png'">
                         </div>
                         <p class="post-username">john</p>
                         <span class="one-day"> . 1w </span>
@@ -356,6 +416,7 @@
             </div>
             
         </div>
+
     </section>
 
     <!-- القسم الجانبي الأيمن -->
