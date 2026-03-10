@@ -364,6 +364,33 @@ document.addEventListener("DOMContentLoaded", function() {
         console.warn("Communities button or languages bar not found!");
         return;
     }
+    // كود مسح البوست باستخدام Event Listener (بيحل مشكلة VS Code Error)
+    document.addEventListener('click', async function(e) {
+        if (e.target.classList.contains('delete-btn')) {
+            const postId = e.target.getAttribute('data-post-id');
+            
+            if (confirm("هل أنت متأكد أنك تريد مسح هذا المنشور نهائياً؟")) {
+                try {
+                    const response = await fetch(`/api/delete_post/${postId}`, {
+                        method: 'POST'
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.status === 'success') {
+                        // إخفاء البوست من الشاشة ثم إعادة تحميل الصفحة
+                        e.target.closest('.post-main').style.display = 'none';
+                        window.location.reload(); 
+                    } else {
+                        alert("❌ خطأ: " + result.message);
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                    alert("❌ حدث خطأ في الاتصال بالخادم.");
+                }
+            }
+        }
+    });
 
     // لما تضغط على Communities
     btn.addEventListener("click", (e) => {
