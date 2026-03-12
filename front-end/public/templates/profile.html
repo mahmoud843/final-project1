@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile | PAD - Mahmoud Saleh</title>
+    <title>Profile | PAD - {{ user.username }}</title>
     
     <!-- ربط خطوط جوجل الاحترافية -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -55,7 +55,7 @@
         .profile-cover::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, rgba(12, 19, 39, 1)); }
 
         .profile-img-wrap { margin-top: -80px; position: relative; z-index: 2; display: inline-block; }
-        .profile-img { width: 160px; height: 160px; border-radius: 50%; border: 5px solid #0f1933; box-shadow: 0 0 30px rgba(27, 116, 228, 0.6); object-fit: cover; background-color: #fff; transition: filter 0.3s; }
+        .profile-img { width: 160px; height: 160px; border-radius: 50%; border: 5px solid #0f1933; box-shadow: 0 0 30px rgba(27, 116, 228, 0.6); object-fit: cover; background-color: #fff; }
         
         .edit-img-btn { position: absolute; bottom: 10px; right: 5px; width: 45px; height: 45px; border-radius: 50%; background: #1b74e4; color: white; border: 4px solid #0f1933; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.4); }
         .edit-img-btn:hover { background: #6ce5ff; color: #000; transform: scale(1.1); }
@@ -69,7 +69,7 @@
 
         .level-badge { background: rgba(108, 229, 255, 0.15); border: 1px solid rgba(108, 229, 255, 0.3); color: #6ce5ff; padding: 6px 18px; border-radius: 50px; font-weight: 800; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;}
 
-        /* كروت الإحصائيات مع تحسين ألوان العناوين */
+        /* كروت الإحصائيات */
         .stat-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px; transition: all 0.3s ease; height: 100%; padding: 25px !important;}
         .stat-card:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.06); border-color: rgba(108, 229, 255, 0.3); box-shadow: 0 10px 20px rgba(0,0,0,0.2);}
         .icon-box { width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 15px; }
@@ -78,9 +78,8 @@
         .bg-purple-glow { background: rgba(162, 139, 255, 0.15); color: #c4b5fd; box-shadow: 0 0 20px rgba(162, 139, 255, 0.25);}
         .bg-green-glow { background: rgba(34, 197, 94, 0.15); color: #6ee7b7; box-shadow: 0 0 20px rgba(34, 197, 94, 0.25);}
 
-        /* اللون الجديد الواضح للعناوين تحت الأرقام */
         .stat-label { 
-            color: #b7c5ef; /* لون فاتح وواضح */
+            color: #b7c5ef;
             font-size: 13px; 
             letter-spacing: 1.5px; 
             text-transform: uppercase; 
@@ -89,7 +88,6 @@
             margin-top: 5px;
         }
 
-        /* الكروت العامة */
         .detail-card { background: rgba(15, 25, 51, 0.4); border: 1px solid rgba(145, 175, 255, 0.08); border-radius: 24px; padding: 25px; height: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.15);}
         .detail-card h5 { color: #fff; font-size: 18px; font-weight: 800; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px;}
         
@@ -140,7 +138,7 @@
             border-color: #ef4444;
         }
         
-        /* نافذة تأكيد الحذف المخصصة */
+        /* نافذة تأكيد الحذف */
         .delete-modal {
             position: fixed;
             top: 0;
@@ -230,7 +228,6 @@
             transform: scale(1.05);
         }
 
-        /* قسم Contribution Graph (الجديد) */
         .contribution-graph { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-start; margin-top: 15px;}
         .contrib-box { width: 14px; height: 14px; border-radius: 3px; background: rgba(255,255,255,0.05); transition: 0.2s; cursor: pointer;}
         .contrib-box:hover { transform: scale(1.2); border: 1px solid #fff;}
@@ -252,11 +249,13 @@
 </head>
 <body>
 
-<!-- زر الرجوع العائم المربوط بـ Flask -->
+<!-- زر الرجوع العائم -->
 <a href="{{ url_for('home_page') }}" class="btn-floating-back">
     <i class="fa-solid fa-arrow-left"></i>
     <span>Back to PAD</span>
 </a>
+
+{% set is_owner = (session.user_id == user.id) %}
 
 <div class="profile-container">
     
@@ -265,16 +264,18 @@
         <div class="profile-cover"></div>
         
         <div class="profile-img-wrap">
-            <img src="{{ url_for('static', filename='images/default-avatar.png') }}" alt="Avatar" class="profile-img" id="user-avatar" onerror="this.src='https://via.placeholder.com/160'">
+            <img src="{{ url_for('static', filename='images/' + user.profile_image) }}" alt="Avatar" class="profile-img" id="user-avatar" onerror="this.src='{{ url_for('static', filename='images/default-avatar.png') }}'">
+            {% if is_owner %}
             <label for="img-upload-input" class="edit-img-btn" title="Change Profile Picture">
                 <i class="fa-solid fa-camera"></i>
             </label>
             <input type="file" id="img-upload-input" accept="image/png, image/jpeg, image/jpg">
+            {% endif %}
         </div>
         
         <div class="p-4 pt-2">
-            <h2 class="user-name">{% if session.username %}{{ session.username }}{% else %}Mahmoud Saleh{% endif %}</h2>
-            <p class="user-bio"><i class="fa-solid fa-terminal text-info me-2"></i>Founder & Full Stack Developer</p>
+            <h2 class="user-name">{{ user.username }}</h2>
+            <p class="user-bio"><i class="fa-solid fa-terminal text-info me-2"></i>{{ user.bio or 'PAD Developer' }}</p>
             
             <div class="social-links mb-4">
                 <a href="#" title="GitHub"><i class="fa-brands fa-github"></i></a>
@@ -282,52 +283,56 @@
                 <a href="#" title="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
             </div>
 
-            <span class="level-badge mb-4"><i class="fa-solid fa-bolt text-warning me-1"></i> Pad Admin</span>
+            <span class="level-badge mb-4"><i class="fa-solid fa-bolt text-warning me-1"></i> {{ user.programming_level or 'PAD Member' }}</span>
             
             <div class="d-flex justify-content-center gap-3 mt-3">
                 <button class="btn btn-outline-light px-4 py-2 rounded-pill fw-bold border-secondary" onclick="copyProfileLink()">
                     <i class="fa-solid fa-share-nodes me-2"></i> Share Profile
                 </button>
-                <button class="btn btn-primary px-4 py-2 rounded-pill shadow-sm fw-bold" style="background: #1b74e4; border:none;">
+                {% if is_owner %}
+                <button class="btn btn-primary px-4 py-2 rounded-pill shadow-sm fw-bold" style="background: #1b74e4; border:none;" onclick="editProfile()">
                     <i class="fa-solid fa-pen-to-square me-2"></i> Edit Details
                 </button>
+                {% else %}
+                <button class="btn btn-primary px-4 py-2 rounded-pill shadow-sm fw-bold" style="background: #1b74e4; border:none;" onclick="followUser()" id="followBtn">
+                    <i class="fa-solid fa-user-plus me-2"></i> Follow
+                </button>
+                {% endif %}
             </div>
         </div>
     </div>
 
-    <!-- 2. شبكة الإحصائيات (Count Up Animation + توضيح الألوان) -->
+    <!-- 2. شبكة الإحصائيات -->
     <div class="row g-4 mb-5 text-center">
         <div class="col-6 col-md-4">
             <div class="stat-card">
                 <div class="icon-box bg-blue-glow"><i class="fa-solid fa-folder-open"></i></div>
-                <h2 class="text-white fw-bold mb-0 counter code-font" style="font-size: 36px;" data-target="18">0</h2>
-                <!-- لون واضح جداً -->
+                <h2 class="text-white fw-bold mb-0 code-font" style="font-size: 36px;" id="projects-count">{{ projects|length }}</h2>
                 <span class="stat-label">Projects</span> 
             </div>
         </div>
         <div class="col-6 col-md-4">
             <div class="stat-card">
                 <div class="icon-box bg-purple-glow"><i class="fa-solid fa-users"></i></div>
-                <h2 class="text-white fw-bold mb-0 counter code-font" style="font-size: 36px;" data-target="1240">0</h2>
+                <h2 class="text-white fw-bold mb-0 code-font" style="font-size: 36px;" id="followers-count">{{ followers_count|default(0) }}</h2>
                 <span class="stat-label">Followers</span>
             </div>
         </div>
         <div class="col-12 col-md-4">
             <div class="stat-card">
                 <div class="icon-box bg-green-glow"><i class="fa-solid fa-flask"></i></div>
-                <h2 class="text-white fw-bold mb-0 counter code-font" style="font-size: 36px;" data-target="86">0</h2>
+                <h2 class="text-white fw-bold mb-0 code-font" style="font-size: 36px;" id="labs-count">{{ labs_count|default(0) }}</h2>
                 <span class="stat-label">Labs Solved</span>
             </div>
         </div>
     </div>
 
-    <!-- 3. قسم جديد: Activity Graph (زي GitHub) -->
+    <!-- 3. Activity Graph -->
     <div class="detail-card mb-5">
         <h5><i class="fa-solid fa-chart-simple text-success me-2"></i> Coding Activity (Last 30 Days)</h5>
         <div class="contribution-graph" id="contrib-graph">
-            <!-- بيتم توليد المربعات بالجافاسكريبت تحت -->
         </div>
-        <div class="d-flex justify-content-end align-items-center mt-3 gap-2" style="font-size: 12px; color: var(--muted);">
+        <div class="d-flex justify-content-end align-items-center mt-3 gap-2" style="font-size: 12px; color: #a3b8cc;">
             <span>Less</span>
             <div class="contrib-box"></div>
             <div class="contrib-box lvl-1"></div>
@@ -338,25 +343,42 @@
         </div>
     </div>
 
-    <!-- 4. قسم المشاريع مع خاصية الحذف -->
+    <!-- 4. قسم المشاريع -->
     <div class="detail-card mb-5">
         <h5><i class="fa-solid fa-code-branch text-info me-2"></i> My Projects</h5>
         <div class="projects-list" id="projects-list">
-            <!-- المشاريع ستتم إضافتها ديناميكياً عبر JavaScript -->
+            {% if projects %}
+                {% for project in projects %}
+                <div class="project-card" data-project-id="{{ project.id }}">
+                    <div class="project-info">
+                        <h6>{{ project.title }}</h6>
+                        <p>{{ project.description }}</p>
+                    </div>
+                    {% if is_owner %}
+                    <div class="delete-project-btn" onclick="deleteProject({{ project.id }})">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted text-center">No projects yet</p>
+            {% endif %}
         </div>
+        {% if is_owner %}
         <button class="btn btn-outline-info w-100 mt-3 py-2 rounded-pill fw-bold" onclick="addNewProject()">
             <i class="fa-solid fa-plus me-2"></i> Add New Project
         </button>
+        {% endif %}
     </div>
 
-    <!-- 5. قسم مكتبة PAD المرئية (Visual Books) -->
+    <!-- 5. قسم المكتبة المرئية -->
     <div class="detail-card mb-5">
         <h5><i class="fa-solid fa-photo-film text-warning me-2"></i> PAD Visual Books</h5>
-        <p style="color: var(--muted); font-size: 13px; margin-top: -15px; margin-bottom: 20px;">
+        <p style="color: #a3b8cc; font-size: 13px; margin-top: -15px; margin-bottom: 20px;">
             Your purchased interactive & visual learning materials from our store.
         </p>
         <div class="row g-3 mt-1">
-            <!-- الكتاب المرئي الأول -->
             <div class="col-md-4">
                 <div class="book-card" style="cursor: pointer;" title="Watch Now">
                     <div style="position: relative;">
@@ -370,7 +392,6 @@
                 </div>
             </div>
             
-            <!-- الكتاب المرئي الثاني -->
             <div class="col-md-4">
                 <div class="book-card" style="cursor: pointer;" title="Watch Now">
                     <div style="position: relative;">
@@ -384,7 +405,6 @@
                 </div>
             </div>
             
-            <!-- الكتاب المرئي الثالث -->
             <div class="col-md-4">
                 <div class="book-card" style="cursor: pointer;" title="Watch Now">
                     <div style="position: relative;">
@@ -400,7 +420,7 @@
         </div>
     </div>
 
-    <!-- 6. قسم المهارات ونشاط الاستضافة -->
+    <!-- 6. قسم المهارات -->
     <div class="row g-4 mb-4">
         <div class="col-lg-7">
             <div class="detail-card">
@@ -427,7 +447,7 @@
 
 </div>
 
-<!-- نافذة تأكيد الحذف المخصصة -->
+<!-- نافذة تأكيد الحذف -->
 <div class="delete-modal" id="deleteModal">
     <div class="delete-modal-content">
         <div class="delete-modal-icon">
@@ -447,15 +467,10 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     // متغيرات عامة
-    let projects = [
-        { name: 'E-commerce Platform', description: 'Full-stack online store with payment' },
-        { name: 'Task Manager App', description: 'Productivity app with real-time updates' },
-        { name: 'Portfolio Website', description: 'Personal portfolio with dark mode' }
-    ];
-    
-    let currentDeleteIndex = null;
+    let currentDeleteProjectId = null;
+    let isOwner = {% if is_owner %}true{% else %}false{% endif %};
 
-    // 1. توليد مربعات النشاط (GitHub Style Graph)
+    // 1. توليد مربعات النشاط
     const graphContainer = document.getElementById('contrib-graph');
     for (let i = 0; i < 90; i++) {
         const box = document.createElement('div');
@@ -468,40 +483,38 @@
         graphContainer.appendChild(box);
     }
 
-    // 2. تغيير الصورة
+    // 2. تغيير الصورة (للمالك فقط)
+    {% if is_owner %}
     const imageInput = document.getElementById('img-upload-input');
     const avatarImg = document.getElementById('user-avatar');
 
     imageInput.addEventListener('change', function(event) {
         const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                avatarImg.src = e.target.result;
-                showToast("Profile picture updated successfully!", "success");
-            }
-            reader.readAsDataURL(file);
-        }
-    });
-
-    // 3. عداد الأرقام
-    const counters = document.querySelectorAll('.counter');
-    counters.forEach(counter => {
-        const updateCount = () => {
-            const target = +counter.getAttribute('data-target');
-            const count = +counter.innerText;
-            const inc = target / 100;
-            if (count < target) {
-                counter.innerText = Math.ceil(count + inc);
-                setTimeout(updateCount, 20);
+        if (!file) return;
+        
+        const formData = new FormData();
+        formData.append('avatar', file);
+        
+        fetch('/api/upload-avatar', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                avatarImg.src = '/static/images/' + data.filename + '?t=' + new Date().getTime();
+                showToast('Profile picture updated!', 'success');
             } else {
-                counter.innerText = target;
+                showToast('Error uploading image', 'danger');
             }
-        };
-        updateCount();
+        })
+        .catch(error => {
+            showToast('Error uploading image', 'danger');
+        });
     });
+    {% endif %}
 
-    // 4. نسخ الرابط
+    // 3. نسخ الرابط
     function copyProfileLink() {
         const dummy = document.createElement('input');
         document.body.appendChild(dummy);
@@ -509,52 +522,10 @@
         dummy.select();
         document.execCommand('copy');
         document.body.removeChild(dummy);
-        showToast("Profile link copied to clipboard!", "primary");
+        showToast('Profile link copied to clipboard!', 'primary');
     }
 
-    // 5. دوال إدارة المشاريع
-    function renderProjects() {
-        const projectsList = document.getElementById('projects-list');
-        if (!projectsList) return;
-        
-        projectsList.innerHTML = '';
-        projects.forEach((project, index) => {
-            const projectCard = document.createElement('div');
-            projectCard.className = 'project-card';
-            projectCard.innerHTML = `
-                <div class="project-info">
-                    <h6>${project.name}</h6>
-                    <p>${project.description}</p>
-                </div>
-                <div class="delete-project-btn" onclick="showDeleteModal(${index})">
-                    <i class="fa-solid fa-trash-can"></i>
-                </div>
-            `;
-            projectsList.appendChild(projectCard);
-        });
-        
-        // تحديث عداد المشاريع
-        const projectCounter = document.querySelector('.counter[data-target="18"]');
-        if (projectCounter) {
-            const targetValue = projects.length;
-            projectCounter.setAttribute('data-target', targetValue);
-            projectCounter.innerText = '0';
-            // إعادة تشغيل العداد
-            const updateCount = () => {
-                const target = +projectCounter.getAttribute('data-target');
-                const count = +projectCounter.innerText;
-                const inc = target / 100;
-                if (count < target) {
-                    projectCounter.innerText = Math.ceil(count + inc);
-                    setTimeout(updateCount, 20);
-                } else {
-                    projectCounter.innerText = target;
-                }
-            };
-            updateCount();
-        }
-    }
-
+    // 4. إضافة مشروع جديد
     function addNewProject() {
         const projectName = prompt('Enter project name:');
         if (!projectName) return;
@@ -562,47 +533,141 @@
         const projectDesc = prompt('Enter project description:');
         if (!projectDesc) return;
         
-        projects.push({ name: projectName, description: projectDesc });
-        renderProjects();
-        showToast('Project added successfully!', 'success');
+        fetch('/api/add-project', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: projectName,
+                description: projectDesc
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                // إضافة المشروع للصفحة
+                const projectsList = document.getElementById('projects-list');
+                
+                // إخفاء رسالة "No projects yet" لو موجودة
+                if (projectsList.children.length === 1 && projectsList.children[0].tagName === 'P') {
+                    projectsList.innerHTML = '';
+                }
+                
+                const newProject = document.createElement('div');
+                newProject.className = 'project-card';
+                newProject.setAttribute('data-project-id', data.project.id);
+                newProject.innerHTML = `
+                    <div class="project-info">
+                        <h6>${data.project.name}</h6>
+                        <p>${data.project.description}</p>
+                    </div>
+                    <div class="delete-project-btn" onclick="deleteProject(${data.project.id})">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </div>
+                `;
+                
+                projectsList.appendChild(newProject);
+                
+                // تحديث العداد
+                document.getElementById('projects-count').textContent = projectsList.children.length;
+                
+                showToast('Project added successfully!', 'success');
+            }
+        });
     }
 
-    function showDeleteModal(index) {
-        currentDeleteIndex = index;
-        const projectName = projects[index].name;
+    // 5. حذف مشروع
+    function deleteProject(projectId) {
+        currentDeleteProjectId = projectId;
+        const projectCard = document.querySelector(`.project-card[data-project-id="${projectId}"]`);
+        const projectName = projectCard.querySelector('h6').textContent;
+        
         document.getElementById('delete-project-name').textContent = 
-            `Are you sure you want to delete "${projectName}"? This action cannot be undone.`;
+            'Are you sure you want to delete "' + projectName + '"? This action cannot be undone.';
         document.getElementById('deleteModal').classList.add('show');
     }
 
     function closeDeleteModal() {
         document.getElementById('deleteModal').classList.remove('show');
-        currentDeleteIndex = null;
+        currentDeleteProjectId = null;
     }
 
     function confirmDelete() {
-        if (currentDeleteIndex !== null) {
-            const deletedProject = projects[currentDeleteIndex].name;
-            projects.splice(currentDeleteIndex, 1);
-            renderProjects();
-            showToast(`Project "${deletedProject}" deleted successfully!`, 'success');
-        }
-        closeDeleteModal();
+        if (!currentDeleteProjectId) return;
+        
+        fetch('/api/delete-project/' + currentDeleteProjectId, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                // حذف المشروع من الصفحة
+                const projectCard = document.querySelector(`.project-card[data-project-id="${currentDeleteProjectId}"]`);
+                projectCard.remove();
+                
+                // تحديث العداد
+                const projectsList = document.getElementById('projects-list');
+                document.getElementById('projects-count').textContent = projectsList.children.length;
+                
+                // لو مفيش مشاريع، نضيف رسالة
+                if (projectsList.children.length === 0) {
+                    projectsList.innerHTML = '<p class="text-muted text-center">No projects yet</p>';
+                }
+                
+                showToast('Project deleted successfully!', 'success');
+            }
+        })
+        .finally(() => {
+            closeDeleteModal();
+        });
     }
 
-    // إغلاق النافذة عند الضغط على ESC
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && document.getElementById('deleteModal').classList.contains('show')) {
-            closeDeleteModal();
+    // 6. متابعة مستخدم
+  function followUser() {
+    fetch('/api/follow/{{ user.id }}', {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            const followBtn = document.getElementById('followBtn');
+            followBtn.innerHTML = '<i class="fa-solid fa-user-check me-2"></i> Following';
+            followBtn.style.background = '#22c55e';
+            
+            // هنضيف السطر ده هنا
+            document.getElementById('followers-count').innerText = data.followers_count;
+            
+            showToast('You are now following this user!', 'success');
         }
+    })
+    .catch(error => {
+        showToast('Error following user', 'danger');
     });
+}
+    // 7. تعديل البروفايل
+    function editProfile() {
+        showToast('Edit feature coming soon!', 'info');
+    }
 
-    // 6. دوال الإشعارات
+    // 8. دوال الإشعارات
     function showToast(message, type) {
-        const icon = type === 'success' ? 'fa-check-circle' : 'fa-info-circle';
-        const colorClass = type === 'success' ? 'text-bg-success' : 'text-bg-primary';
+        let icon = 'fa-info-circle';
+        let bgColor = '#3b82f6';
+        
+        if (type === 'success') {
+            icon = 'fa-check-circle';
+            bgColor = '#22c55e';
+        } else if (type === 'danger') {
+            icon = 'fa-exclamation-circle';
+            bgColor = '#ef4444';
+        } else if (type === 'primary') {
+            icon = 'fa-info-circle';
+            bgColor = '#3b82f6';
+        }
+        
         const toastHTML = `
-            <div class="toast align-items-center ${colorClass} border-0 show mb-2 shadow-lg" role="alert">
+            <div class="toast align-items-center border-0 show mb-2 shadow-lg" role="alert" style="background: ${bgColor}; color: white;">
               <div class="d-flex">
                 <div class="toast-body fw-bold" style="font-family: 'Nunito', sans-serif;">
                   <i class="fa-solid ${icon} me-2"></i> ${message}
@@ -617,8 +682,12 @@
         }, 3000);
     }
 
-    // تهيئة المشاريع عند تحميل الصفحة
-    document.addEventListener('DOMContentLoaded', renderProjects);
+    // إغلاق النافذة عند الضغط على ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && document.getElementById('deleteModal').classList.contains('show')) {
+            closeDeleteModal();
+        }
+    });
 </script>
 </body>
 </html>
