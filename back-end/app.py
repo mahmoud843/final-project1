@@ -42,6 +42,7 @@ followers = db.Table('followers',
     db.Column('follower_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
     db.Column('followed_id', db.Integer, db.ForeignKey('users.id'), primary_key=True)
 )
+
 class User(db.Model):
     __tablename__ = 'users'
     
@@ -58,7 +59,7 @@ class User(db.Model):
     # العلاقات
     posts = db.relationship('Post', backref='author', lazy=True, cascade='all, delete-orphan')
     comments = db.relationship('Comment', backref='author', lazy=True, cascade='all, delete-orphan')
-        # نظام المتابعة
+    # نظام المتابعة
     followed = db.relationship(
         'User', secondary=followers,
         primaryjoin=(followers.c.follower_id == id),
@@ -107,7 +108,9 @@ class Post(db.Model):
     programming_language = db.Column(db.String(50))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
+    # العلاقات
     comments = db.relationship('Comment', backref='post', lazy=True, cascade='all, delete-orphan')
+    likes = db.relationship('Like', backref='post', lazy=True, cascade='all, delete-orphan')
 
 class Comment(db.Model):
     __tablename__ = 'comments'
@@ -117,6 +120,17 @@ class Comment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     comment_text = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Like(db.Model):
+    __tablename__ = 'likes'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # منع تكرار الإعجاب
+    __table_args__ = (db.UniqueConstraint('post_id', 'user_id', name='unique_like'),)
 
 # ------------------------------------------------------
 # User Loader for Flask-Login
@@ -252,13 +266,17 @@ def profile():
     """صفحة الملف الشخصي"""
     projects = Post.query.filter_by(user_id=current_user.id, post_type='project').all()
     
-    # عدد المتابعين (المستخدمين اللي بيفضلوه)
+    # عدد المتابعين
     followers_count = current_user.followers.count()
+    
+    # عدد التحديات اللي اتحلت (labs)
+    labs_count = Post.query.filter_by(user_id=current_user.id, post_type='lab').count()
     
     return render_template('profile.html', 
                          user=current_user,
                          projects=projects,
-                         followers_count=followers_count)
+                         followers_count=followers_count,
+                         labs_count=labs_count)
 
 @app.route('/profile/<int:user_id>')
 @login_required
@@ -269,13 +287,14 @@ def view_profile(user_id):
     
     followers_count = user.followers.count()
     is_following = current_user.is_following(user)
+    labs_count = Post.query.filter_by(user_id=user_id, post_type='lab').count()
     
     return render_template('profile.html', 
                          user=user,
                          projects=projects,
                          followers_count=followers_count,
+                         labs_count=labs_count,
                          is_following=is_following)
-    
 
 @app.route('/api/add-project', methods=['POST'])
 @login_required
@@ -301,6 +320,7 @@ def add_project():
             'description': new_project.description
         }
     })
+
 @app.route('/api/delete-project/<int:project_id>', methods=['DELETE'])
 @login_required
 def delete_project(project_id):
@@ -323,7 +343,7 @@ def delete_project(project_id):
 @login_required
 def follow_user(user_id):
     """متابعة أو إلغاء متابعة مستخدم"""
-    print(f"Follow attempt: user {current_user.id} trying to follow {user_id}")  # سطر للتتبع
+    print(f"Follow attempt: user {current_user.id} trying to follow {user_id}")
     
     if user_id == current_user.id:
         return jsonify({'error': 'Cannot follow yourself'}), 400
@@ -346,6 +366,104 @@ def follow_user(user_id):
         'followed': followed,
         'followers_count': user_to_follow.followers.count()
     })
+
+@app.route('/api/followers/<int:user_id>')
+@login_required
+def get_followers(user_id):
+    """جلب قائمة المتابعين لمستخدم معين"""
+    user = User.query.get_or_404(user_id)
+    followers = user.followers.all()
+    
+    return jsonify([{
+        'id': f.id,
+        'username': f.username,
+        'profile_image': f.profile_image
+    } for f in followers])
+
+@app.route('/api/suggestions')
+@login_required
+def get_suggestions():
+    """اقتراح مستخدمين للمتابعة"""
+    users = User.query.filter(User.id != current_user.id).all()
+    suggestions = [u for u in users if not current_user.is_following(u)][:5]
+    
+    return jsonify([{
+        'id': u.id,
+        'username': u.username,
+        'profile_image': u.profile_image
+    } for u in suggestions])
+
+# ==========================================
+# APIs الإعجابات والتعليقات
+# ==========================================
+
+@app.route('/api/like/<int:post_id>', methods=['POST'])
+@login_required
+def like_post(post_id):
+    """إعجاب أو إلغاء إعجاب بمنشور"""
+    post = Post.query.get_or_404(post_id)
+    
+    like = Like.query.filter_by(post_id=post_id, user_id=current_user.id).first()
+    
+    if like:
+        db.session.delete(like)
+        liked = False
+    else:
+        new_like = Like(post_id=post_id, user_id=current_user.id)
+        db.session.add(new_like)
+        liked = True
+    
+    db.session.commit()
+    
+    return jsonify({
+        'success': True,
+        'liked': liked,
+        'likes_count': post.likes.count()
+    })
+
+@app.route('/api/comment/<int:post_id>', methods=['POST'])
+@login_required
+def add_comment(post_id):
+    """إضافة تعليق"""
+    data = request.json
+    comment_text = data.get('comment')
+    
+    if not comment_text:
+        return jsonify({'error': 'Comment cannot be empty'}), 400
+    
+    new_comment = Comment(
+        post_id=post_id,
+        user_id=current_user.id,
+        comment_text=comment_text
+    )
+    
+    db.session.add(new_comment)
+    db.session.commit()
+    
+    return jsonify({
+        'success': True,
+        'comment': {
+            'id': new_comment.id,
+            'username': current_user.username,
+            'text': comment_text,
+            'created_at': new_comment.created_at.strftime('%Y-%m-%d %H:%M')
+        }
+    })
+
+@app.route('/api/comments/<int:post_id>')
+@login_required
+def get_comments(post_id):
+    """جلب تعليقات منشور"""
+    post = Post.query.get_or_404(post_id)
+    comments = post.comments.order_by(Comment.created_at.desc()).all()
+    
+    return jsonify([{
+        'id': c.id,
+        'username': c.author.username,
+        'text': c.comment_text,
+        'created_at': c.created_at.strftime('%Y-%m-%d %H:%M')
+    } for c in comments])
+
 @app.route('/api/upload-avatar', methods=['POST'])
 @login_required
 def upload_avatar():
@@ -366,6 +484,18 @@ def upload_avatar():
     db.session.commit()
     
     return jsonify({'success': True, 'filename': filename})
+
+@app.route('/api/update-bio', methods=['POST'])
+@login_required
+def update_bio():
+    """تحديث السيرة الذاتية"""
+    data = request.json
+    new_bio = data.get('bio', '')
+    
+    current_user.bio = new_bio
+    db.session.commit()
+    
+    return jsonify({'success': True, 'bio': new_bio})
 
 @app.route('/ai')
 @login_required
