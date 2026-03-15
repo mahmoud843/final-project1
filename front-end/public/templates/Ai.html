@@ -465,9 +465,20 @@ window.onload = function() {
       
       if (message.includes('سلام عليكم')) { return "وعليكم السلام ورحمة الله وبركاته 🌹"; }
       if (message.includes('مرحبا') || message.includes('اهلا') || message.includes('السلام') || message.includes('هلا') || message.includes('ازيك') || message.includes('hello') || message.includes('hi')) { return getRandomResponse(knowledgeBase.greetings); }
+     else if (
+  message.includes('ازاي اتعلم البايثون') ||
+  message.includes('ازاي اتعلم python') ||
+  message.includes('اتعلم بايثون') ||
+  message.includes('تعلم بايثون') ||
+  message.includes('تعلم python') ||
+  message.includes('تعلم البايثون من الموقع')
+) { 
+  return "أهلاً 👋 تعليم البرمجة سهل جداً من خلال موقعنا. تقدر تدخل على صفحة Code Lab وتختار لغة Python. بعدها هيبدأ يعرض لك أكواد من الأسهل للأصعب، وتقدر تتعلم خطوة بخطوة وتكتب الكود بنفسك لحد ما تتقن اللغة 💻.";
+}
       else if (message.includes('مع السلامة') || message.includes('وداع') || message.includes('باى') || message.includes('باي') || message.includes('bye')) { return getRandomResponse(knowledgeBase.farewells); }
       else if (message.includes('شكر') || message.includes('thank you') || message.includes('thanks') || message.includes('متشكر')) { return getRandomResponse(knowledgeBase.thanks); }
       else if (message.includes('برمج') || message.includes('كود') || message.includes('code') || message.includes('html') || message.includes('css') || message.includes('جافا') || message.includes('javascript') || message.includes('python') || message.includes('بايثون')) { return getRandomResponse(knowledgeBase.programming); }
+
       else if (message.includes('نصيح') || message.includes('نصحة') || message.includes('advice') || message.includes('مساعدة') || message.includes('ساعدني') || message.includes('مشكلة')) { return getRandomResponse(knowledgeBase.advice); }
       else if (message.includes('طقس') || message.includes('weather') || message.includes('جو')) { return getRandomResponse(knowledgeBase.weather); }
       else if (message.includes('وقت') || message.includes('الساعة') || message.includes('time') || message.includes('تاريخ')) { return `الوقت الحالي على جهازك: ${new Date().toLocaleTimeString('ar-EG')} – والتاريخ: ${new Date().toLocaleDateString('ar-EG')}`; }
@@ -488,6 +499,7 @@ window.onload = function() {
         return getRandomResponse(generalResponses);
       }
     }
+  
     function getRandomResponse(responses) { return responses[Math.floor(Math.random() * responses.length)]; }
     function addTypingIndicator() {
       const chat = document.getElementById("chat");
