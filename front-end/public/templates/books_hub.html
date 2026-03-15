@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAD Books Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='books.css') }}">
+</head>
+<body>
+    <div class="books-page">
+        <header class="hero-shell">
+            <div class="hero-copy">
+                <a class="back-link" href="{{ url_for('home_page') }}"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+                <span class="hero-chip">Books Module</span>
+                <h1>Professional Learning Library</h1>
+                <p>
+                    A polished books section connected to Flask and MySQL. Each book has a dedicated learning path,
+                    quick metadata, and a clean experience that keeps this module independent from the rest of the project.
+                </p>
+
+                <div class="hero-actions">
+                    <a class="primary-btn" href="#catalog"><i class="fa-solid fa-book-open-reader"></i> Browse Books</a>
+                    <a class="secondary-btn" href="{{ url_for('library_home') }}"><i class="fa-solid fa-folder-open"></i> Open Library Folder</a>
+                </div>
+
+                <div class="hero-highlights">
+                    <div class="highlight-pill"><i class="fa-solid fa-database"></i> Dynamic from MySQL</div>
+                    <div class="highlight-pill"><i class="fa-solid fa-bolt"></i> Flask Connected</div>
+                    <div class="highlight-pill"><i class="fa-solid fa-laptop-code"></i> VS Code Ready</div>
+                </div>
+            </div>
+
+            <div class="hero-panel">
+                <div class="panel-card featured-card">
+                    <span class="panel-label">Featured Collection</span>
+                    {% set featured = books[0] if books else None %}
+                    {% if featured %}
+                    <h2>{{ featured.title }}</h2>
+                    <p>{{ featured.description }}</p>
+                    <div class="mini-stats">
+                        <div><strong>{{ featured.lessons_count }}</strong><span>Lessons</span></div>
+                        <div><strong>{{ featured.level_name }}</strong><span>Level</span></div>
+                        <div><strong>{{ '%.0f'|format(featured.price) }}</strong><span>EGP</span></div>
+                    </div>
+                    <a class="primary-btn wide-btn" href="{{ url_for('book_details', book_id=featured.id) }}">View Details</a>
+                    {% else %}
+                    <h2>No data yet</h2>
+                    <p>Import the SQL file to display the books collection.</p>
+                    {% endif %}
+                </div>
+                <div class="panel-card compact-stats">
+                    <div><strong>{{ books|length }}</strong><span>Total Books</span></div>
+                    <div><strong>4</strong><span>Core Tracks</span></div>
+                    <div><strong>100%</strong><span>Modular</span></div>
+                </div>
+            </div>
+        </header>
+
+        <section class="catalog-toolbar" id="catalog">
+            <div class="toolbar-copy">
+                <span class="section-kicker">Catalog</span>
+                <h2>Books curated in a cleaner, more professional layout</h2>
+                <p>Search, filter by category, and open either the full details page or the original learning folder.</p>
+            </div>
+
+            <div class="toolbar-controls">
+                <label class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input id="bookSearch" type="text" placeholder="Search by title, category, level...">
+                </label>
+                <label class="filter-box">
+                    <i class="fa-solid fa-filter"></i>
+                    <select id="categoryFilter">
+                        <option value="all">All Categories</option>
+                        {% for category in books|map(attribute='category')|unique|list %}
+                        <option value="{{ category|lower }}">{{ category }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+            </div>
+        </section>
+
+        <section class="books-grid" id="booksGrid">
+            {% for book in books %}
+            <article class="book-card"
+                     style="--accent: {{ book.accent_color }};"
+                     data-title="{{ book.title|lower }}"
+                     data-category="{{ book.category|lower }}"
+                     data-level="{{ book.level_name|lower }}"
+                     data-author="{{ book.author_name|lower }}">
+                <div class="book-cover-wrap">
+                    <div class="book-cover">
+                        <img src="{{ url_for('library_file', filename=book.cover_image.replace('library/', '')) }}" alt="{{ book.title }} cover">
+                    </div>
+                    <span class="book-badge">{{ book.category }}</span>
+                </div>
+
+                <div class="book-content">
+                    <div class="book-top">
+                        <span class="book-level">{{ book.level_name }}</span>
+                        <span class="book-price">{{ '%.0f'|format(book.price) }} EGP</span>
+                    </div>
+
+                    <h3>{{ book.title }}</h3>
+                    <p>{{ book.description }}</p>
+
+                    <div class="meta-grid">
+                        <div class="meta-chip"><i class="fa-solid fa-user-pen"></i> {{ book.author_name }}</div>
+                        <div class="meta-chip"><i class="fa-solid fa-book-open"></i> {{ book.lessons_count }} lessons</div>
+                        <div class="meta-chip"><i class="fa-solid fa-folder-tree"></i> Library linked</div>
+                    </div>
+
+                    <div class="card-actions">
+                        <a class="primary-btn" href="{{ url_for('book_details', book_id=book.id) }}">Details</a>
+                        <a class="secondary-btn" href="{{ url_for('open_book', book_id=book.id) }}">Open Book</a>
+                    </div>
+                </div>
+            </article>
+            {% else %}
+            <div class="empty-state">
+                <h3>No books found.</h3>
+                <p>Import the SQL file, then restart Flask.</p>
+            </div>
+            {% endfor %}
+        </section>
+    </div>
+
+    <script>
+        const searchInput = document.getElementById('bookSearch');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const cards = Array.from(document.querySelectorAll('.book-card'));
+
+        function filterBooks() {
+            const searchValue = (searchInput?.value || '').trim().toLowerCase();
+            const categoryValue = categoryFilter?.value || 'all';
+
+            cards.forEach(card => {
+                const haystack = [
+                    card.dataset.title,
+                    card.dataset.category,
+                    card.dataset.level,
+                    card.dataset.author
+                ].join(' ');
+
+                const matchesSearch = !searchValue || haystack.includes(searchValue);
+                const matchesCategory = categoryValue === 'all' || card.dataset.category === categoryValue;
+                card.style.display = matchesSearch && matchesCategory ? '' : 'none';
+            });
+        }
+
+        searchInput?.addEventListener('input', filterBooks);
+        categoryFilter?.addEventListener('change', filterBooks);
+    </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ book.title }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='books.css') }}">
+</head>
+<body>
+    <div class="books-page details-page">
+        <a class="back-link" href="{{ url_for('books_page') }}"><i class="fa-solid fa-arrow-left"></i> Back to Books</a>
+
+        <section class="details-shell" style="--accent: {{ book.accent_color }};">
+            <div class="details-cover-panel">
+                <div class="details-cover">
+                    <img src="{{ url_for('library_file', filename=book.cover_image.replace('library/', '')) }}" alt="{{ book.title }} cover">
+                </div>
+            </div>
+
+            <div class="details-content">
+                <span class="hero-chip">{{ book.category }}</span>
+                <h1>{{ book.title }}</h1>
+                <p class="details-lead">{{ book.description }}</p>
+
+                <div class="details-grid">
+                    <div class="detail-card"><strong>{{ book.author_name }}</strong><span>Author</span></div>
+                    <div class="detail-card"><strong>{{ book.level_name }}</strong><span>Level</span></div>
+                    <div class="detail-card"><strong>{{ book.lessons_count }}</strong><span>Lessons</span></div>
+                    <div class="detail-card"><strong>{{ '%.0f'|format(book.price) }} EGP</strong><span>Price</span></div>
+                </div>
+
+                <div class="details-actions">
+                    <a class="primary-btn" href="{{ url_for('open_book', book_id=book.id) }}"><i class="fa-solid fa-book-open"></i> Start Learning</a>
+                    <a class="secondary-btn" href="{{ url_for('library_home') }}"><i class="fa-solid fa-folder-open"></i> Open Library</a>
+                </div>
+
+                <div class="details-note">
+                    <h3>Why this section looks more professional</h3>
+                    <ul>
+                        <li>Dedicated details page for every book.</li>
+                        <li>Clear metadata presentation and strong visual hierarchy.</li>
+                        <li>Books module remains isolated from teammates' sections.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
